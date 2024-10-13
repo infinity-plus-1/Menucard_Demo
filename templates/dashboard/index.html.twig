@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello DashboardController!{% endblock %}
+
+{% block body %}
+    <!--<BR />
+    <div class="container todo-container">
+        <h1>ToDo-Liste</h1>
+        <BR />
+        <input id="enter_new_todo" placeholder="Enter new ToDo here..."
+                class="form-control list-group-item" />
+        <div class="d-flex justify-content-around">
+            <div class="p-2">
+                <div class="d-flex justify-content-around">
+                    <div class="p-2 todo-filter-wrapper">
+                        <input type="radio" class="todo-filter-radio"
+                            name="radio-filter" id="all-radio" />
+                        <label for="all-radio">All</label>
+                    </div>
+                    <div class="p-2 todo-filter-wrapper">
+                        <input type="radio" class="todo-filter-radio"
+                            name="radio-filter" id="undone-radio" />
+                        <label for="undone-radio">Undone</label>
+                    </div>
+                    <div class="p-2 todo-filter-wrapper">
+                        <input type="radio" class="todo-filter-radio"
+                            name="radio-filter" id="done-radio" />
+                        <label for="done-radio">Done</label>
+                    </div>
+                </div>
+            </div>
+            <div class="p-2">Flex item 2</div>
+            <div class="p-2">Flex item 3</div>
+        </div>
+        <ul id="todo_list" class="list-group">
+            <li class="list-group-item">
+                <div class="todocheckbox-wrapper align-middle">
+                    <input type="checkbox" class="todocheckbox" data-is-checkbox
+                        aria-label="Checkbox for following text input" />
+                </div>
+                <span class="todospan tododone" aria-label="Text input with checkbox">
+                    Cras justo odin
+                </span>
+            </li>
+        </ul>
+    </div>-->
+    <!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>The World of Flowers</title>
+</head>
+<body>
+ <div id="page">
+		<div id="top">
+        	<a href="#"><img src="contactus.png" alt="Contact Us" title="Contact Us"/></a>
+        	<a href="#"><img src="rssfeed.png" alt="RSS Feed" title="RSS Feed"/></a>
+        </div>
+        <div id="header">
+        	<h1 id="mainHeading">Flowers</h1>
+            <h2>World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers. World of flowers.</h2>
+		</div>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+ <div id="content">
+   	<div class="content_top">
+       	<h1>Rose in Different Colors</h1>
+    </div>
+    <div class="content_instance">
+       	<img src="image1.jpeg" />
+        <div class="content_right">
+       	<h2>Red Rose</h2>
+        <p>This is a red rose. This is a red rose.  This is a red rose.  This is a red rose.  This is a red rose.  This is a red rose.  This is a red rose.  This is a red rose.  This is a red rose. </p><br />
+        <p>This is a beautiful rose. This is a beautiful rose. This is a beautiful rose. This is a beautiful rose. This is a beautiful rose. This is a beautiful rose.</p>
+    </div>
+ </div>
+       <div class="content_instance">
+          	<img src="image2.jpeg" />
+            <div class="content_right">
+			   <h2>Yellow Rose</h2>
+			   <p>This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. This is a yellow rose. </p>
+			</div>
+	   </div>
+	   <div class="content_instance">
+       	<img src="image3.jpeg" />
+        <div class="content_right">
+			   <h2>White Rose</h2>
+               <p>This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. This is a white rose. </p>
+               <br /><p>The beauty and purity of white. The beauty and purity of white. The beauty and purity of white. The beauty and purity of white. The beauty and purity of white. The beauty and purity of white. </p>
+        </div>
+       </div>
+       <div class="content_instance">
+            <img src="image4.jpeg" />
+            <div class="content_right">
+                <h2>Pink Rose</h2>
+                <p>This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. This is a pink rose. </p>
+            </div>
+       </div>
+  </div>
+  <div id="selecter">
+    <select name="test">
+        <option value="Hier steht die 1">Hier steht die 1</option>
+        <option value="Hier steht die 2">Hier steht die 2</option>
+        <option value="Hier steht die 3">Hier steht die 3</option>
+    </select>
+    <input type="button" value="Test" />
+  </div>
+  <input type="text" value="This is an editable paragraph." />
+  <div id="divElement" style="height: 50px;"></div>
+<div id="footer">Copyright 2015</div>
+</div>
+ <script>
+    function isInView(element, options) {
+        element.style.backgroundColor = options.backgroundColor;
+        element.style.color = options.color;
+    }
+    function isOutView(element, options) {
+        element.style.backgroundColor = options.backgroundColor;
+        element.style.color = options.color;
+    }
+    
+   $(document).ready(() => {
+        const options = {
+            callbackExit: isOutView,
+            threshold: .1,
+            entryOptions: {
+                color: "white",
+                backgroundColor: "black"
+            },
+            exitOptions: {
+                color: "black",
+                backgroundColor: "white"
+            },
+            callExitOnStop: true,
+            execCounter: 1
+        };
+        $(".content_instance").inView(isInView, options).startView();
+
+        setTimeout(() => {
+            $(".content_instance").stopView();
+        }, 10000);
+
+        const divElement = $("#divElement");
+        if (divElement.length > 0) {
+            divElement.inView(isInView);
+            divElement[0].inViewObj.callbackExit = isOutView;
+            const config = {
+                entryOptions: {
+                    color: "white",
+                    backgroundColor: "black"
+                },
+                exitOptions: {
+                    color: "black",
+                    backgroundColor: "white"
+                }
+            };
+            divElement.updateConfig(config);
+            divElement.startView();
+        }
+   });
+ </script>
+</body>
+</html>
+
+{% endblock %}

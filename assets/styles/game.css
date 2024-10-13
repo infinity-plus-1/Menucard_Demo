@@ -1,0 +1,22 @@
+#game_menu {
+    text-align: center;
+    margin-top: 1vh;
+}
+
+.memorygame_moves {
+    font-size: 1.5em;
+}
+
+.memorycard {
+    opacity: 0.0;
+    width: 100%;
+    height: 100%;
+}
+
+.memorycard_wrapper {
+    width: 150px;
+    height: 150px;
+    float: left;
+    margin: 2vh 1vw auto auto;
+    border: 1px solid black;
+}
