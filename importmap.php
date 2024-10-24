@@ -25,4 +25,29 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'bootstrap' => [
+        'version' => '5.3.3',
+    ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.3',
+        'type' => 'css',
+    ],
+    'stimulus-use' => [
+        'version' => '0.52.2',
+    ],
+    'sweetalert2' => [
+        'version' => '11.14.3',
+    ],
+    'chart.js' => [
+        'version' => '3.9.1',
+    ],
+    '@symfony/ux-live-component' => [
+        'path' => './vendor/symfony/ux-live-component/assets/dist/live_controller.js',
+    ],
+    'babel' => [
+        'version' => '6.23.0',
+    ],
 ];

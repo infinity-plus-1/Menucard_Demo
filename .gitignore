@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -23,12 +22,10 @@
 /public/assets/
 /assets/vendor/
 /assets/css/game.css
-/assets/css/home.css
 /assets/js/games
 /assets/js/Aufgabe.js
 /assets/js/aufgabetest.js
 /assets/js/inView.js
-/assets/js/home.js
 ###< symfony/asset-mapper ###
 
 ###> .envs ###

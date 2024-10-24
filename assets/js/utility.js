@@ -592,3 +592,102 @@ function ThumbnailSlider(container, images = []) {
 })(jQuery)
 
 /**     End ThumbnailSlider */
+
+/**     Begin Tools */
+
+/**
+ * 
+ * @param {Number} deg The degree that needs to be converted
+ * @returns The radian of input degree
+ */
+Number.prototype.deg2rad = function() {
+    return (this * Math.PI) / 180.0;
+}
+
+
+
+/**
+ * 
+ * @param {Number} latA The latitude of place A
+ * @param {Number} lonA The longitude of place A
+ * @param {Number} latB The latitude of place B
+ * @param {Number} lonB The longitude of place B
+ * @returns The beeline distance between A and B in km
+ * 
+ * Derived from:
+ * https://www.movable-type.co.uk/scripts/latlong.html
+ */
+
+function disBeelineKm(latA, lonA, latB, lonB) {
+    const R = 6371;
+    const dLat= (latB-latA).deg2rad() / 2;
+    const dLon= (lonB-lonA).deg2rad() / 2;
+
+    const a = Math.sin(dLat) * Math.sin(dLat) +
+            Math.cos(latA.deg2rad()) * Math.cos(latB.deg2rad()) *
+            Math.sin(dLon) * Math.sin(dLon);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    return R * c;
+}
+
+/**
+ * Validates an E-Mail address
+ * @param {String} email The email to validate
+ * @returns True if the given email validates the requirements, otherwise false
+ * 
+ * Derived from:
+ * https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+ */
+
+function validateEmail(email) {
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+};
+
+/**
+ * Validates a password, it must contain at least:
+ * 
+ * 1 Uppercase character A-Z
+ * 1 Lowercase character a-z
+ * 1 Number character 0-9
+ * 1 Special character !-_*+?#@%&
+ * 8-20 characters in total
+ * @param {String} password The password to validate
+ * @returns True if the given password validates the requirements, otherwise false
+ */
+
+function validatePassword(password) {
+    return String(password)
+    .match(
+        /^(?=.*[A-Z]).(?=.*[!\-_*+?#@%&]).(?=.*[a-z]).(?=.*[0-9]).{8,20}$/
+    );
+};
+
+/**
+ * 
+ * @param {String} color The color in hex format, with or without a leading #
+ * @param {Number} multiplier The multiplier, either smaller than 1 to 
+ *  darken or greater to brighten up the color
+ * @returns The changed color in hex format, with or without a leading #
+ *  (depends on the input color)
+ */
+
+function colorBrightness(color, multiplier) {
+    const leadingHash = color.charAt(0) === '#';
+    color = color.replace(/(#)/g, '');
+    if (color.length == 3) color = color.replace(/(.)/g, '$1$1');
+    let r = Number.parseInt(color.substring(0, 2), 16) || 0;
+    let g = Number.parseInt(color.substring(2, 4), 16) || 0;
+    let b = Number.parseInt(color.substring(4, 6), 16) || 0;
+    return (leadingHash ? '#' : '') +
+        (Math.floor(Math.min(r * multiplier, 255))).toString(16).padStart(2, '0') +
+        (Math.floor(Math.min(g * multiplier, 255))).toString(16).padStart(2, '0') +
+        (Math.floor(Math.min(b * multiplier, 255))).toString(16).padStart(2, '0');
+}
+
+
+/**     End Tools */

@@ -1,60 +1,81 @@
-.todocheckbox-wrapper {
-    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E');
+.home-fade-in-transition-red {
+    color: red;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+}
+
+#welcome-img {
+    background-image: url('../images/buffet.png');
     background-repeat: no-repeat;
-	background-position: center left;
-    height: 50px;
-    width: 50px;
-    display: inline-block;
+    background-size: 100vw 100vh;
+    text-align: center;
+    text-shadow: -5px 2px 5px black;
+    color: white;
 }
 
-.todocheckbox-wrapper input[type=checkbox]:hover {
-    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill%3D%22gray%22%20fill-opacity%3D%220.15%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E');
+#welcome-img h1 {
+    font-size: 5em;
 }
 
-.todocheckbox-wrapper input[type=checkbox]:checked {
-    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%09%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2220%22%20fill%3D%22white%22%20fill-opacity%3D%221%22%3E%3C%2Fcircle%3E%0A%20%20%3Cpolyline%20points%3D%2213%2C29%2023%2C36%2033%2C14%22%20style%3D%22fill%3Anone%3Bstroke%3Agreen%3Bstroke-width%3A5%22%20%2F%3E%0A%3C%2Fsvg%3E');
+#welcome-img h1 {
+    font-size: 5vw;
 }
 
-.todocheckbox-wrapper input[type=checkbox]:checked:hover {
-    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%09%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2220%22%20fill%3D%22gray%22%20fill-opacity%3D%220.15%22%3E%3C%2Fcircle%3E%0A%20%20%3Cpolyline%20points%3D%2213%2C29%2023%2C36%2033%2C14%22%20style%3D%22fill%3Anone%3Bstroke%3Agreen%3Bstroke-width%3A5%22%20%2F%3E%0A%3C%2Fsvg%3E');
+#postcode-align-container {
+    flex-direction: column;
 }
 
-.todocheckbox {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    height: 50px;
-    width: 50px;
+.city-select {
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 10px;
+    box-shadow: 0px 0px 5px black;
+    border-radius: 15px;
+    max-height: calc(100vh - 10vw);
 }
 
-.todospan {
-    margin-left: 0.7vw;
-    font-size: 1.5em;
+#postcode-container h3 {
+    font-size: 3vw;
 }
 
-.tododone {
-    text-decoration: line-through;
-    color: gray;
+#postcode-container div.input-group{
+    width: 85px;
 }
 
-.todo-container {
-    border: 1px solid black;
-    padding: 0.6em;
+#postcode-container input.form-control {
+    font-size: 1em;
+    padding: 10px;
+    height: 45px;
+    font-weight: 600;
+    text-align: center;
 }
 
-.todo-filter-wrapper:hover label {
-    text-decoration: underline;
-    font-weight: 700;
+.city-select-element {
+    width: 100%;
+    height: calc((100vh - 10vw) / 10);
+    max-height: calc((100vh - 10vw) / 10);
+    border: 1px solid gray;
+    background: rgb(125, 125, 125, .3);
+    cursor: pointer;
+    margin-bottom: .5vh;
 }
 
-.todo-filter-wrapper input[type=radio]:checked + label{
-    text-decoration: underline;
-    font-weight: 700;
+.city-select-element span{
+    font-size: 1.5vw;
+    height: calc((95vh - 15vw - 85px) / 10);
+    display: flex;
+    align-items: center;
 }
 
-.todo-filter-radio {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
+#selected-city-span {
+    
 }
 
+.city-select-element:hover {
+    background: rgb(125, 125, 125, .7);
+}
+
+#carouselExampleIndicators img {
+    cursor: pointer;
+}

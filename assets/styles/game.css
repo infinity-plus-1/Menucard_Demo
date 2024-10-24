@@ -20,3 +20,64 @@
     margin: 2vh 1vw auto auto;
     border: 1px solid black;
 }
+
+.todocheckbox-wrapper {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+	background-position: center left;
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+}
+
+.todocheckbox-wrapper input[type=checkbox]:hover {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill%3D%22gray%22%20fill-opacity%3D%220.15%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E');
+}
+
+.todocheckbox-wrapper input[type=checkbox]:checked {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%09%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2220%22%20fill%3D%22white%22%20fill-opacity%3D%221%22%3E%3C%2Fcircle%3E%0A%20%20%3Cpolyline%20points%3D%2213%2C29%2023%2C36%2033%2C14%22%20style%3D%22fill%3Anone%3Bstroke%3Agreen%3Bstroke-width%3A5%22%20%2F%3E%0A%3C%2Fsvg%3E');
+}
+
+.todocheckbox-wrapper input[type=checkbox]:checked:hover {
+    background-image: url('data:image/svg+xml;utf8,%3Csvg%20height%3D%2250%22%20width%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2222%22%20stroke%3D%22gray%22%20fill-opacity%3D%220%22%20stroke-width%3D%223%22%3E%3C%2Fcircle%3E%0A%09%3Ccircle%20cx%3D%2225%22%20cy%3D%2225%22%20r%3D%2220%22%20fill%3D%22gray%22%20fill-opacity%3D%220.15%22%3E%3C%2Fcircle%3E%0A%20%20%3Cpolyline%20points%3D%2213%2C29%2023%2C36%2033%2C14%22%20style%3D%22fill%3Anone%3Bstroke%3Agreen%3Bstroke-width%3A5%22%20%2F%3E%0A%3C%2Fsvg%3E');
+}
+
+.todocheckbox {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    height: 50px;
+    width: 50px;
+}
+
+.todospan {
+    margin-left: 0.7vw;
+    font-size: 1.5em;
+}
+
+.tododone {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.todo-container {
+    border: 1px solid black;
+    padding: 0.6em;
+}
+
+.todo-filter-wrapper:hover label {
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.todo-filter-wrapper input[type=radio]:checked + label{
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.todo-filter-radio {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+}
+
