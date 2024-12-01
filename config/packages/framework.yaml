@@ -1,5 +1,6 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
+<<<<<<< HEAD
     session:
         handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
         gc_maxlifetime: '%env(REDIS_TTL)%'
@@ -11,7 +12,21 @@ framework:
 
     #esi: true
     fragments: true
+=======
+    secret: '%env(APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session: true
+
+    #esi: true
+    #fragments: true
+>>>>>>> a8ada84 (Add initial set of files)
 
 when@test:
     framework:
         test: true
+<<<<<<< HEAD
+=======
+        session:
+            storage_factory_id: session.storage.factory.mock_file
+>>>>>>> a8ada84 (Add initial set of files)
