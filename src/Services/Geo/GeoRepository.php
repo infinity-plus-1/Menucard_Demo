@@ -1,9 +1,9 @@
 <?php
-namespace App\Utility\Geo;
+namespace App\Services\Geo;
 
 require_once "pcde.php";
 
-final class Geo {
+final class GeoRepository {
     private $citiesDE;
     private $dataMatches;
 

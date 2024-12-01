@@ -18,12 +18,23 @@
     align-items: center;
 }
 
+.flex-column-start-around {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
 .fit-cover {
     object-fit: cover;
 }
 
 .fsize-4vh {
     font-size: 4vh;
+}
+
+.fsize-2-5vw {
+    font-size: 2.5vw;
 }
 
 .disabled {
@@ -83,4 +94,12 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .loadingFadeTransition {
+    transition: opacity 100ms;
+  }
+
+  .loadingFade {
+    opacity: .7;
   }

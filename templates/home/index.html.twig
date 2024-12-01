@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
+{% block metas%}
+<link rel="prefetch" href="{{ path('dashboard ') }}" />
+{% endblock %}
 {% block body %}
+
     <div>
         <script src="{{ asset('js/home.js') }}"></script>
         <link rel="stylesheet" href="{{ asset('styles/home.css') }}" />
@@ -107,104 +111,13 @@
             </div>
         </div>
         <BR />
-        <div class="container text-center">
-            <span style="font-size: 2em;" class="badge badge-pill badge-danger">
-                Inspiration
-            </span>
-        </div>
-        <div class="container">
-            <h1 class="text-center">Get 
-                <span class="text-uppercase font-weight-bold text-danger">
-                    inspired 
-                </span>
-                by a pullout of our delicious
-                <span class="text-uppercase font-weight-bold text-danger">
-                    meals
-                </span>
-            </h1> 
-        </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-7">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-                        </ol>
-                        <div class="carousel-inner">
-                            <div
-                                class="carousel-item active"
-                                data-home-target="carousalImgs"
-                                {{ stimulus_controller('home', {
-                                    selectedCarousalImg: 0
-                                }) }}
-                                data-action="click->home#gotoProduct"
-                            >
-                                <img class="d-block w-100 vh-75 fit-cover"
-                                    src="{{ asset('images/paella.png') }}" alt="Paella">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Paella</h5>
-                                    <p>Feels vibes from the sun...</p>
-                                </div>
-                            </div>
-                            <div
-                                class="carousel-item"
-                                data-home-target="carousalImgs"
-                                {{ stimulus_controller('home', {
-                                    selectedCarousalImg: 1
-                                }) }}
-                                data-action="click->home#gotoProduct"
-                            >
-                                <img class="d-block w-100 vh-75 fit-cover"
-                                    src="{{ asset('images/spaghetti.png') }}" alt="Spaghetti Bolognese">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Spaghetti Bolognese</h5>
-                                    <p>Classic, but not outdated!</p>
-                                </div>
-                            </div>
-                            <div
-                                class="carousel-item"
-                                data-home-target="carousalImgs"
-                                {{ stimulus_controller('home', {
-                                    selectedCarousalImg: 2
-                                }) }}
-                                data-action="click->home#gotoProduct"
-                            >
-                                <img class="d-block w-100 vh-75 fit-cover"
-                                    src="{{ asset('images/tiramisu.png') }}" alt="Tiramisu">
-                                <div class="carousel-caption d-none d-md-block">
-                                    <h5>Tiramisu</h5>
-                                    <p>Sweet, beloved dessert!</p>
-                                </div>
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-1"></div>
-                <div class="col-2" style="overflow: hidden;">
-                    <div style="height: 100%; width: 100%;"
-                        class="font-weight-light text-uppercase flex-wrap-center">
-                        <span style="opacity: 0;" class="fsize-4vh">
-                            Slide through our promotions 
-                        </span>
-                        <span style="opacity: 0;" class="fsize-4vh">
-                            to begin your <span>adventure </span>
-                        </span>
-                        <span style="opacity: 0;" class="fsize-4vh">
-                            in the jungle <span>of tastes...</span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <turbo-frame
+            id="home_carousel"
+            src="{{ fragment_uri(controller('App\\Controller\\HomeController::_renderCarousel')) }}" 
+            loading="lazy"
+            data-controller="_home-carousel"
+        >
+            Loading...
+        </turbo-frame>
     </div>
 {% endblock %}

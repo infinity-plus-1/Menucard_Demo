@@ -1,28 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
 import { useDebounce } from 'stimulus-use'
-function animateHomeCarouselText(element) {
-    let margin = $(element).parent().css("width");
-    $(element).css({
-        "margin-left": margin,
-        "opacity": "1"
-    }).animate({
-        "margin-left": 0
-    }, 1000, function () {
-        if ($(element).index() > 0) {
-            $(this).find("span").addClass("home-fade-in-transition-red");
-        }
-    });
-}
 
 export default class extends Controller {
 
     static targets = [
-        'carousalImgs',
         'zipInput'
     ];
 
     static values = {
-        selectedCarousalImg: String,
         selectedCity: String
     };
 
@@ -33,11 +18,6 @@ export default class extends Controller {
 
     initialize() {
         this.application.debug = false;
-        $(document).ready(function () {
-            $(".col-2 .fsize-4vh").inView(animateHomeCarouselText, {
-                interval: 100, execCounter: 1
-            }).startView();
-        });
     }
 
     connect() {
@@ -83,27 +63,14 @@ export default class extends Controller {
     autofillPostalCode() {
         const zipInputValue = this.zipInputTarget.value;
         if (zipInputValue != '' && zipInputValue.length < 6) {
-            /*axios({
-                method: 'get',
-                url: 'https://api.geoapify.com/v1/geocode/autocomplete',
-                responseType: 'json',
-                params: {
-                    'text': zipInputValue,
-                    'limit': '10',
-                    'format': 'json',
-                    'filter': 'countrycode:de',
-                    'apiKey': '0d33941822104371b45012f25db0268f'
-                }
-              })*/
-              
-              axios({
+            axios({
                 method: 'get',
                 url: '/zips',
                 responseType: 'json',
                 params: {
                     'zip': zipInputValue
                 }
-              })
+            })
             .then((response) => {
                 const matches = JSON.parse(response.request.response);
                 let citySelectElements = $('.city-select-element'), i = 0;
