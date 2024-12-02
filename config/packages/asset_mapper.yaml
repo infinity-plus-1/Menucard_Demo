@@ -5,3 +5,9 @@ framework:
             - assets/
         importmap_script_attributes:
             'data-turbo-track': 'reload'
+        missing_import_mode: strict
+
+when@prod:
+    framework:
+        asset_mapper:
+            missing_import_mode: warn

@@ -20,3 +20,5 @@ import './turbo/turbo-util.js';
     $('.modal.fade.show').removeClass('show').css('display', 'none');
 
 });*/
+
+console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

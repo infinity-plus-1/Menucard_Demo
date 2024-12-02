@@ -7,7 +7,6 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
-<<<<<<< HEAD
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
@@ -49,16 +48,6 @@
         "twbs/bootstrap": "5.3.3",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
-=======
-        "symfony/console": "7.2.*",
-        "symfony/dotenv": "7.2.*",
-        "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.2.*",
-        "symfony/runtime": "7.2.*",
-        "symfony/yaml": "7.2.*"
-    },
-    "require-dev": {
->>>>>>> a8ada84 (Add initial set of files)
     },
     "config": {
         "allow-plugins": {
@@ -66,10 +55,6 @@
             "symfony/flex": true,
             "symfony/runtime": true
         },
-<<<<<<< HEAD
-=======
-        "bump-after-update": true,
->>>>>>> a8ada84 (Add initial set of files)
         "sort-packages": true
     },
     "autoload": {
@@ -95,12 +80,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-<<<<<<< HEAD
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
-=======
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
->>>>>>> a8ada84 (Add initial set of files)
         },
         "post-install-cmd": [
             "@auto-scripts"
@@ -115,7 +96,6 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-<<<<<<< HEAD
             "require": "7.1.*"
         }
     },
@@ -128,9 +108,5 @@
         "symfony/phpunit-bridge": "^7.1",
         "symfony/stopwatch": "7.1.*",
         "symfony/web-profiler-bundle": "7.1.*"
-=======
-            "require": "7.2.*"
-        }
->>>>>>> a8ada84 (Add initial set of files)
     }
 }

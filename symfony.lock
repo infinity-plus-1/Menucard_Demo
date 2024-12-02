@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
     "doctrine/doctrine-bundle": {
         "version": "2.13",
         "recipe": {
@@ -58,10 +57,6 @@
     },
     "symfony/console": {
         "version": "7.1",
-=======
-    "symfony/console": {
-        "version": "7.2",
->>>>>>> a8ada84 (Add initial set of files)
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -72,7 +67,6 @@
             "bin/console"
         ]
     },
-<<<<<<< HEAD
     "symfony/debug-bundle": {
         "version": "7.1",
         "recipe": {
@@ -85,8 +79,6 @@
             "config/packages/debug.yaml"
         ]
     },
-=======
->>>>>>> a8ada84 (Add initial set of files)
     "symfony/flex": {
         "version": "2.4",
         "recipe": {
@@ -100,21 +92,12 @@
         ]
     },
     "symfony/framework-bundle": {
-<<<<<<< HEAD
         "version": "7.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "7.0",
             "ref": "6356c19b9ae08e7763e4ba2d9ae63043efc75db5"
-=======
-        "version": "7.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "7.2",
-            "ref": "87bcf6f7c55201f345d8895deda46d2adbdbaa89"
->>>>>>> a8ada84 (Add initial set of files)
         },
         "files": [
             "config/packages/cache.yaml",
@@ -127,7 +110,6 @@
             "src/Kernel.php"
         ]
     },
-<<<<<<< HEAD
     "symfony/mailer": {
         "version": "7.1",
         "recipe": {
@@ -202,10 +184,6 @@
     },
     "symfony/routing": {
         "version": "7.1",
-=======
-    "symfony/routing": {
-        "version": "7.2",
->>>>>>> a8ada84 (Add initial set of files)
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -216,7 +194,6 @@
             "config/packages/routing.yaml",
             "config/routes.yaml"
         ]
-<<<<<<< HEAD
     },
     "symfony/security-bundle": {
         "version": "7.1",
@@ -328,7 +305,5 @@
     },
     "twig/extra-bundle": {
         "version": "v3.13.0"
-=======
->>>>>>> a8ada84 (Add initial set of files)
     }
 }

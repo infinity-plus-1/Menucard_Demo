@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> a8ada84 (Add initial set of files)
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -11,8 +7,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-<<<<<<< HEAD
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
@@ -47,5 +41,4 @@ templates/imageslider
 src/Controller/ImagesliderController.php
 src/Controller/MemoryGameController.php
 ###< web page controllers ###
-=======
->>>>>>> a8ada84 (Add initial set of files)
+###< symfony/asset-mapper ###
