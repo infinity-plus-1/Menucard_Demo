@@ -49,6 +49,7 @@ class RegistrationController extends AbstractController
             
             return $this->render('registration/index.html.twig', [
                 'form' => $form,
+                'width' => $request->request->get('width') ?? 0,
             ], new Response('', 422));
         }
     }

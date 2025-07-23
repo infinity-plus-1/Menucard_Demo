@@ -29,24 +29,34 @@ class HomeController extends AbstractController
         $suggestedRestaurants = [];
         $allRestaurants = [];
         $status = 200;
-        try {
-            $allRestaurantsDzEntities = $em->getRepository(DeliveryZip::class)->getCompaniesByDeliveryZip($request->get('zip'), [], true);
-            foreach ($allRestaurantsDzEntities as $entity) {
-                if ($entity instanceof DeliveryZip) {
-                    $company = $entity->getCompany();
-                    if ($company instanceof Company) {
-                        $allRestaurants[] = $company;
+        $message = '';
+        $zip = $request->get('zip');
+        if ($zip) {
+            try {
+                $allRestaurantsDzEntities = $em->getRepository(DeliveryZip::class)->getCompaniesByDeliveryZip($zip, [], true);
+                foreach ($allRestaurantsDzEntities as $entity) {
+                    if ($entity instanceof DeliveryZip) {
+                        $company = $entity->getCompany();
+                        if ($company instanceof Company) {
+                            $allRestaurants[] = $company;
+                        }
                     }
                 }
+                usort($allRestaurants, fn($a, $b) => $a->getAverageRating() < $b->getAverageRating());
+                $suggestedRestaurants = array_slice($allRestaurants, 0, self::MAX_SUGGESTIONS);
+            } catch (\Throwable $th) {
+                $status = 500;
             }
-            usort($allRestaurants, fn($a, $b) => $a->getAverageRating() < $b->getAverageRating());
-            $suggestedRestaurants = array_slice($allRestaurants, 0, self::MAX_SUGGESTIONS);
-        } catch (\Throwable $th) {
-            $status = 500;
+        } else {
+            $status = 400;
+            $message = 'We\'ve received no zip code. Please reload and try again.';
         }
+        
         return $this->render('home/_restaurant_suggestions.html.twig', [
             'suggestedRestaurants' => $suggestedRestaurants,
             'status' => $status,
+            'message' => $message,
+            'zip' => $zip,
         ]);
     }
 
@@ -55,18 +65,25 @@ class HomeController extends AbstractController
     {
         $pagerfanta = NULL;
         $status = 200;
-        dump($request);
-        try {
-            $zip = $request->get('zip');
-            $pagerfanta = new Pagerfanta(
-                new QueryAdapter(
-                    $em->getRepository(DeliveryZip::class)->getCompaniesByDeliveryZip($zip, $request->query->all())
-                )
-            );
-            $pagerfanta->setMaxPerPage(1);
-            $pagerfanta->setCurrentPage($request->get('page') ?? 1);
-        } catch (\Throwable $th) {
-            $status = 500;
+        $message = '';
+        $zip = $request->get('zip');
+
+        if ($zip) {
+            try {
+                
+                $pagerfanta = new Pagerfanta(
+                    new QueryAdapter(
+                        $em->getRepository(DeliveryZip::class)->getCompaniesByDeliveryZip($zip, $request->query->all())
+                    )
+                );
+                $pagerfanta->setMaxPerPage(1);
+                $pagerfanta->setCurrentPage($request->get('page') ?? 1);
+            } catch (\Throwable $th) {
+                $status = 500;
+            }
+        } else {
+            $status = 400;
+            $message = 'We\'ve received no zip code. Please reload and try again.';
         }
 
         $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
@@ -80,6 +97,8 @@ class HomeController extends AbstractController
         return $this->render('home/_restaurants_list.stream.html.twig', [
             'pager' => $pagerfanta,
             'status' => $status,
+            'message' => $message,
+            'zip' => $zip,
             'proximity' => $proximity,
         ]);
     }

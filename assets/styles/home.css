@@ -156,6 +156,12 @@
         -moz-transform: skewX(-10deg);
     }
 
+    .skew-reverse-container {
+        transform: skewX(10deg);
+        -webkit-transform: skewX(10deg);
+        -moz-transform: skewX(10deg);
+    }
+
     #restaurant-suggestions-std-img {
         transform: skewX(10deg);
         -webkit-transform: skewX(10deg);
