@@ -1,25 +1,208 @@
-.home-fade-in-transition-red {
-    color: red;
-    transition: all 0.4s linear;
-    -webkit-transition: all 0.4s linear;
-    -moz-transition: all 0.4s linear;
+/** Home 992px bp**/
+
+#welcome-main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#welcome-img {
+#restaurant-suggestions-container {
+    height: 100vh;
+    width: 100%;
+    background-color: #212529;
+}
+
+#suggestions-wrapper-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#restaurantSuggestions {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#restaurant-suggestions-std-img {
+    object-fit: contain;
+    height: 20%;
+}
+
+
+
+#restaurant-suggestions-header-top {
+    color: white;
+}
+
+#restaurant-suggestions-header-bottom {
+    color: white;
+}
+
+#welcome-container h1 {
+    font-size: 5vw;
+    margin-left: 7%;
+}
+  
+#welcome-container {
     background-image: url('../images/buffet.png');
     background-repeat: no-repeat;
     background-size: cover;
     text-align: center;
     text-shadow: -5px 2px 5px black;
     color: white;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 10px;
 }
 
-#welcome-img h1 {
-    font-size: 5em;
+#suggestedRestaurantsSlide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#welcome-img h1 {
-    font-size: 5vw;
+#restaurants-wrapper-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+#restaurants-header-top {
+    text-align: center;
+}
+
+#restaurants-std-img {
+    width: 20%;
+}
+
+.r-s-carousel-img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+.r-s-restaurant-information {
+    position: absolute;
+    right: 0;
+    top: 10%;
+    text-shadow: 1px 1px 2px black;
+    left: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 0;
+    margin-right: 15%;
+    margin-bottom: 1rem;
+    margin-left: 15%;
+}
+
+@media (min-width: 576px) {
+
+}
+
+@media (min-width: 768px) {
+    #welcome-main-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 110vw;
+        margin-left: -5vw;
+    }
+
+    #welcome-container {
+        transform: skewX(-10deg);
+        -webkit-transform: skewX(-10deg);
+        -moz-transform: skewX(-10deg);
+        margin-left: -4vw;
+        width: 54%;
+    }
+
+    .head-img {
+        height: 100vh;
+    }
+
+    #welcome-contaier h1 {
+        transform: skewX(10deg);
+        -webkit-transform: skewX(10deg);
+        -moz-transform: skewX(10deg);
+    }
+
+    #suggestions-wrapper-container {
+        margin-right: 10%;
+    }
+
+    #restaurant-suggestions-container {
+        height: 100vh;
+        width: 54%;
+        background-color: #212529;
+        margin-right: -2%;
+        margin-right: -4vw;
+        transform: skewX(-10deg);
+        -webkit-transform: skewX(-10deg);
+        -moz-transform: skewX(-10deg);
+    }
+
+    #restaurant-suggestions-std-img {
+        transform: skewX(10deg);
+        -webkit-transform: skewX(10deg);
+        -moz-transform: skewX(10deg);
+    }
+
+    .restaurant-suggestions-carousal-item {
+        transform: skewX(10deg);
+        -webkit-transform: skewX(10deg);
+        -moz-transform: skewX(10deg);
+    }
+
+    #zip-select-container {
+        transform: skewX(10deg);
+        -webkit-transform: skewX(10deg);
+        -moz-transform: skewX(10deg);
+        margin-left: 7%;
+    }
+
+    .r-s-carousel-img {
+        margin-left: -5vw;
+    }
+}
+
+@media (min-width: 992px) {
+    #welcome-container {
+        margin-left: -2vw;
+    }
+
+    #restaurant-suggestions-container {
+        margin-right: -4vw;
+    }
+}
+
+@media (min-width: 1200px) {
+    #restaurant-suggestions-container {
+        margin-right: -2vw;
+    }
+}
+
+
+
+.home-fade-in-transition-red {
+    color: red;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
 }
 
 #postcode-align-container {
@@ -35,8 +218,13 @@
     max-height: calc(100vh - 10vw);
 }
 
+#postcode-container {
+    overflow: scroll;
+}
+
 #postcode-container h3 {
-    font-size: 3vw;
+    /*font-size: 3vw;*/
+    font-size: 42px;
 }
 
 #postcode-container div.input-group{
@@ -53,8 +241,7 @@
 
 .city-select-element {
     width: 100%;
-    height: calc((100vh - 10vw) / 10);
-    max-height: calc((100vh - 10vw) / 10);
+
     border: 1px solid gray;
     background: rgb(125, 125, 125, .3);
     cursor: pointer;
@@ -62,8 +249,8 @@
 }
 
 .city-select-element span{
-    font-size: 1.5vw;
-    height: calc((95vh - 15vw - 85px) / 10);
+    /*font-size: 1.5vw;*/
+    font-size: 25px;
     display: flex;
     align-items: center;
 }

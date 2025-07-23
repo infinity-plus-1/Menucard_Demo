@@ -16,10 +16,10 @@ export default class extends Controller {
      * }
      * 
      * <html element
-     * data-controller="login(from abover example) submit-modal"
+     * data-controller="login(from example above) submit-modal"
      * {{
      *      stimulus_action(
-     *          'login(controller from above example)',
+     *          'login(controller from example above)',
      *          'login(the function to call in the controller)',
      *          'click(the event type)'
      *      )
@@ -205,64 +205,59 @@ export default class extends Controller {
         }
         const counter = $('[id^=email-login-input_').length;
         Swal.fire({
-        title: this.titleValue || 'Login',
-        html:
-            `<form>` +
-                `<div>` +
-                    `<label for="email-login-input_${counter}">` +
-                        `${this.enterMailTxtValue || "Enter your E-Mail address"}` +
-                    `</label>` +
-                    `<input id="email-login-input_${counter}" ` +
-                        `type="email" placeholder="` +
-                        `${this.mailPlaceholderValue || "Your mail address"} " ` +
-                        `name="email-login-input_${counter}" class="swal2-input" />` +
-                `</div>` +
-                `<BR /><BR />` +
-                `<div>` +
-                    `<label for="password-login-input_${counter}">` +
-                        `${this.enterPasswordTxtValue || "Enter your password"}` +
-                    `</label>` +
-                    `<input id="password-login-input_${counter}" ` +
-                        `type="password" autocomplete="on" ` +
-                        `name="password-login-input_${counter}" class="swal2-input" />` +
-                `</div>` +
-            `</form>`, 
-        focusConfirm: false,
-        showCancelButton: this.showCancelButtonValue || true,
-        confirmButtonColor: this.confirmButtonColorValue || "#3085d6",
-        cancelButtonColor: this.cancelButtonColorValue || "#d33",
-        cancelButtonText: this.cancelBtnTxtValue || 'Cancel',
-        confirmButtonText: this.confirmBtnTxtValue || 'Login',
-        preConfirm: () => {
-            const email = document.getElementById(`email-login-input_${counter}`);
-            const emailValue = email.value;
-            const password = document.getElementById(`password-login-input_${counter}`);
-            const passwordValue = password.value;
-            let proceed = false;
-            if (validateEmail(emailValue)) {
-                if (validatePassword(passwordValue)) {
-                    proceed = true;
-                } else {
-                    Swal.showValidationMessage('No valid password entered.');
-                    setTimeout(() => {
-                        Swal.resetValidationMessage();
-                    }, (this.loginErrorMsgTimerValue || DEFAULT_LOGIN_ERR_MSG));
+            title: this.titleValue || 'Login',
+            html:
+                `<form>` +
+                    `<div>` +
+                        `<label for="email-login-input_${counter}">` +
+                            `${this.enterMailTxtValue || "Enter your E-Mail address"}` +
+                        `</label>` +
+                        `<input id="email-login-input_${counter}" ` +
+                            `type="email" placeholder="` +
+                            `${this.mailPlaceholderValue || "Your mail address"} " ` +
+                            `name="email-login-input_${counter}" class="swal2-input" />` +
+                    `</div>` +
+                    `<BR /><BR />` +
+                    `<div>` +
+                        `<label for="password-login-input_${counter}">` +
+                            `${this.enterPasswordTxtValue || "Enter your password"}` +
+                        `</label>` +
+                        `<input id="password-login-input_${counter}" ` +
+                            `type="password" autocomplete="on" ` +
+                            `name="password-login-input_${counter}" class="swal2-input" />` +
+                    `</div>` +
+                `</form>`, 
+            focusConfirm: false,
+            showCancelButton: this.showCancelButtonValue || true,
+            confirmButtonColor: this.confirmButtonColorValue || "#3085d6",
+            cancelButtonColor: this.cancelButtonColorValue || "#d33",
+            cancelButtonText: this.cancelBtnTxtValue || 'Cancel',
+            confirmButtonText: this.confirmBtnTxtValue || 'Login',
+            preConfirm: () => {
+                const email = document.getElementById(`email-login-input_${counter}`);
+                const emailValue = email.value;
+                const password = document.getElementById(`password-login-input_${counter}`);
+                const passwordValue = password.value;
+                let proceed = false;
+                if (!validateEmail(emailValue)) {
+                    Swal.showValidationMessage('No valid E-Mail address entered.');
+                    return false;
                 }
-            } else {
-                Swal.showValidationMessage('No valid E-Mail address entered.');
-                setTimeout(() => {
-                    Swal.resetValidationMessage();
-                }, (this.loginErrorMsgTimerValue || DEFAULT_LOGIN_ERR_MSG));
-            }
-            if (proceed) {
-                const elements = {
-                    email: email,
-                    password: password
-                };
+        
+                if (!validatePassword(passwordValue)) {
+                    Swal.showValidationMessage('No valid password entered.');
+                    return false;
+                }
+        
+                const elements = { email, password };
                 return this.callback(elements, this.callbackParams).then((response) => {
                     if (response === (this.successResponseValue || 'Success')) {
                         return true;
                     }
+                    
+                    Swal.showValidationMessage(this.loginErrorMsgTimerValue || 'Unknown error, please try again later.');
+                    return false;
+                }).catch((response) => {
                     let msg = '';
                     switch(response) {
                         case (this.failureResponseValue || 'Failure'):
@@ -273,12 +268,6 @@ export default class extends Controller {
                             break;
                         default:
                             msg = this.loginErrorMsgTimerValue || 'Unknown error, please try again later.';
-                            Swal.disableConfirmButton();
-                            Swal.showValidationMessage(msg);
-                            setTimeout(() => {
-                                Swal.close();
-                            }, (this.loginErrorMsgTimerValue || DEFAULT_LOGIN_ERR_MSG));
-                            return false;
                     }
                     Swal.showValidationMessage(msg);
                     setTimeout(() => {
@@ -286,9 +275,8 @@ export default class extends Controller {
                     }, (this.loginErrorMsgTimerValue || DEFAULT_LOGIN_ERR_MSG));
                     return false;
                 });
-            } else return false;
-        },
-        allowOutsideClick: () => !Swal.isLoading()
+            },
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((response) => {
             if (response.isConfirmed) {
                 Swal.fire({
@@ -300,14 +288,6 @@ export default class extends Controller {
                     timerProgressBar: true
                 });
             }
-        }).catch(() => {
-            console.log("HERE");
-            Swal.showValidationMessage(
-                (this.unknownTextValue || 'Unknown error, please try again later.')
-            );
-            setTimeout(() => {
-                Swal.close();
-            }, (this.loginErrorMsgTimerValue || DEFAULT_LOGIN_ERR_MSG));
         });
     }
 }

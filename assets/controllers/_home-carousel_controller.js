@@ -44,7 +44,7 @@ export default class extends Controller {
         const carousel = new Carousel(carouselElement, {
         interval: 2000,
         touch: false
-        })
+        });
     }
 
     gotoProduct() {

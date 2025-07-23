@@ -2,48 +2,54 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
+use App\Form\RegistrationType;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\Test\FormInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    private function addFieldErrors(FormInterface $form, array $fieldErrors): void
     {
-        
-        /*$user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            /*$plainPassword = $form->get('plainPassword')->getData();
-
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            // do anything else you need here, like send an email
-
-            return $this->redirectToRoute('dashboard');
+        foreach ($fieldErrors as $field => $messages) {
+            $child = $form->get($field);
+            foreach ((array) $messages as $message) {
+                $child->addError(new FormError($message));
+            }
         }
-        if (isset($_POST["fetchForm"]) && $_POST["fetchForm"] == '1') {
-            return $this->render('registration/form.html.twig', [
+    }
+
+    #[Route('/registration', name: 'register')]
+    public function index(Request $request, EntityManagerInterface $em): Response
+    {
+        $user = new User();
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+        if (!$form->isSubmitted()) {
+            return $this->render('registration/index.html.twig', [
                 'form' => $form,
+                'width' => $request->request->get('width') ?? 0,
             ]);
         }
-        return $this->render('registration/register.html.twig', [
-            'form' => $form,
-        ]);*/
-        return $this->render('registration/register.html.twig', [
-        ]);
+        else if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            $em->persist($data);
+            $em->flush();
+
+            return $this->render('registration/reg_success.html.twig', []);
+        } else {
+            
+            
+            return $this->render('registration/index.html.twig', [
+                'form' => $form,
+            ], new Response('', 422));
+        }
     }
 }

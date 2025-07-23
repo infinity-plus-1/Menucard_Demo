@@ -1,0 +1,54 @@
+<turbo-stream action="update" method="morph" target="restaurants-list">
+    <template>
+        {% if pager %}
+            {% for restaurant in pager %}
+                <div
+                    class="container restaurant-card cursor-pointer"
+                    id="restaurant_{{restaurant.company.id}}"
+                    data-current-page="{{ pager.currentPage }}"
+                    {{
+                        stimulus_action('restaurant-filter', 'gotoRestaurant', 'click', { 'restaurant': restaurant.company.id }) |
+                        stimulus_target('restaurant-filter', 'restaurants')
+                    }}
+                >
+                    <div style="width: 300px;">
+                        <img src="{{restaurant.company.logo ? '/' ~ restaurant.company.logo : asset('images/restaurant.svg') }}" />
+                    </div>
+                    <div class="restaurant-card-information">
+                        <h5>{{restaurant.company.name}}</h5>
+                        <p>Cuisine: {{restaurant.company.type.value}}</p>
+                        <p>
+                            {% if restaurant.company.averageRating > 0 %}
+                                {% set stars = restaurant.company.averageRating %}
+                                {% set flooredStars = stars | round(0, 'floor') %}
+                                {% for star in 1..flooredStars %}
+                                    <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    {% set stars = stars - 1 %}
+                                {% endfor %}
+                                {% if stars >= 0.5 %}
+                                    <i class="bi bi-star-half" style="color: gold;"></i>
+                                {% endif %}
+                            {% else %}
+                                <i class="bi bi-star" style="color: gold;"></i>
+                            {% endif %}
+                            ({{restaurant.company.totalRatings ? restaurant.company.totalRatings : 0}})
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="mt-3">
+                {{
+                    pagerfanta(
+                        pager,
+                        'twitter_bootstrap5',
+                        {
+                            'omitFirstPage': true,
+                            proximity: proximity,
+                        }
+                    )
+                }}
+                {# {{ pagerfanta(pager, 'twitter_bootstrap5', {'omitFirstPage': true}) }} #}
+            </div>
+        {% endif %}
+    </template>
+</turbo-stream>

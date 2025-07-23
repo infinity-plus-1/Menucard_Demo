@@ -1,0 +1,9 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.min.css') }}" />
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ include('registration/form.html.twig', { width: width }) }}
+    </div>
+{% endblock %}

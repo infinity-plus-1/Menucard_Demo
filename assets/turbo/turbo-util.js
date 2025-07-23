@@ -62,6 +62,22 @@ const TurboUtil = class {
                 });
             }
         });
+
+        $(document).on('turbo:post-render', (e) => {
+            $('html').removeAttr('aria-busy');
+            requestAnimationFrame(() => {
+                $('body').removeClass('loadingFade');
+            });
+        });
+
+        $(document).on('turbo:before-stream-render', (e) => {
+            const fallbackToDefaultActions = e.detail.render;
+            e.detail.render = function (streamElement) {
+                fallbackToDefaultActions(streamElement).then(() => {
+                    $(document).trigger('turbo:post-render', [streamElement]);
+                });
+            }
+        });
     }
 }
 

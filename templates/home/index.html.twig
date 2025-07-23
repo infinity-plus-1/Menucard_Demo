@@ -1,115 +1,139 @@
 {% extends 'base.html.twig' %}
 {% block metas%}
-<link rel="prefetch" href="{{ path('dashboard ') }}" />
+<link rel="prefetch" href="{{ path('dashboard') }}" />
 {% endblock %}
 {% block body %}
 
     <div>
         <script src="{{ asset('js/home.js') }}"></script>
         <link rel="stylesheet" href="{{ asset('styles/home.css') }}" />
-        <div id="welcome-img" class="head-img d-block">
-            <div {{ stimulus_controller('reload-content', {
-                url: '/register',
-                params: {
-                    'hello': 1,
-                    'bye': 2
-                },
-                loader: 'loader',
-                display: 'flex'
-            }) }}>
-            <div {{ stimulus_target('reload-content', 'content') }}></div>
-            <h1 data-action="click->reload-content#reload">Welcome to Menucard</h1>
-            </div>
-            <div
-                data-controller="home"
-                {{ stimulus_controller('home', {
-                    selectedCity: ''
-                }) }}
-            >
-                <div id="postcode-align-container" class="flex-align-justify-center">
-                    <div
-                        id="postcode-container"
-                        class="flex-align-justify-center city-select"
-                    >
-                        <h3>Please enter your zipcode:</h3>
-                        <div class="input-group mb-1">
-                            <input
-                                type="text"
-                                class="form-control"
-                                placeholder="Zipcode"
-                                aria-label="Zipcode"
-                                data-home-target="zipInput"
-                                {{
-                                    stimulus_action('home', 'autofillPostalCode', 'input')
-                                    |
-                                    stimulus_action('home', 'adaptFontSize', 'input')
-                                }}
-                                maxlength="5"
-                            />
-                        </div>
-                        {% for i in 0..10 %}
-                            <div 
-                                data-home-zip-code-value=""
-                                data-action="click->home#selectCityPostalCode"
-                                class="city-select-element flex-align-justify-center disabled"
-                            >
-                                <span></span>
-                            </div>
-                        {% endfor %}
-                        <div id="zipcode-error" class="disabled">
-                            <span class="error-span" style="text-shadow: none;">
-                                An error occured. Please reload and try again.
-                            </span>
-                        </div>
-                    </div>
-                    <div
-                        data-home-target="selectedCity"
-                        id="selected-city-container"
-                        class="flex-align-justify-center city-select disabled"
-                    >
-                        <div id="selected-city">
-                            <h3 >You currently have selected:</h3>
-                            <div class="flex-align-justify-center">
-                                <h3 id="selected-city-span"></h3>
-                                <span
-                                    {{ 
-                                        stimulus_controller('submit-modal', {
-                                            title: 'Do you want to proceed?',
-                                            text: 'Do you want to discard your selection?',
-                                            cancelBtnTxt: 'Keep',
-                                            confirmBtnTxt: 'Discard',
-                                            successTitle: 'Action successful',
-                                            successText: 'Please select a city of your choice.',
-                                            successTimer: 2000,
-                                            showAbort: true,
-                                            abortTimer: 2000
-
-                                        })
-                                        |
-                                        stimulus_controller('home') 
-                                    }}
+        <div id="welcome-main-container">
+            <div id="welcome-container" class="head-img">
+                <div {{ stimulus_controller('reload-content', {
+                    url: '/register',
+                    params: {
+                        'hello': 1,
+                        'bye': 2
+                    },
+                    loader: 'loader',
+                    display: 'flex'
+                }) }}>
+                <div {{ stimulus_target('reload-content', 'content') }}></div>
+                <h1 id="welcome-header" data-action="click->reload-content#reload">Welcome to Menucard</h1>
+                </div>
+                <div
+                    data-controller="home"
+                    {{ stimulus_controller('home', {
+                        selectedCity: ''
+                    }) }}
+                    id="zip-select-container"
+                >
+                    <div id="postcode-align-container" class="flex-align-justify-center">
+                        <div
+                            id="postcode-container"
+                            class="flex-align-justify-center city-select"
+                        >
+                            <h3>Please enter your zipcode:</h3>
+                            <div class="input-group mb-1">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Zipcode"
+                                    aria-label="Zipcode"
+                                    data-home-target="zipInput"
                                     {{
-                                        stimulus_action (
-                                            'submit-modal', 'defaultConfirmModal', 'home:unselectClicked'
-                                        )
+                                        stimulus_action('home', 'autofillPostalCode', 'input')
                                         |
-                                        stimulus_action (
-                                            'home', 'unselectClicked', 'click'
-                                        )
+                                        stimulus_action('home', 'adaptFontSize', 'input')
                                     }}
-                                    class="close-x h3"
-                                    style="margin-left: 5px;"
-                                    
+                                    maxlength="5"
+                                />
+                            </div>
+                            {% for i in 0..10 %}
+                                <div 
+                                    data-home-zip-code-value=""
+                                    data-action="click->home#selectCityPostalCode"
+                                    class="city-select-element flex-align-justify-center disabled"
                                 >
-                                    X
+                                    <span></span>
+                                </div>
+                            {% endfor %}
+                            <div id="zipcode-error" class="disabled">
+                                <span class="error-span" style="text-shadow: none;">
+                                    An error occured. Please reload and try again.
                                 </span>
                             </div>
                         </div>
+                        <div
+                            data-home-target="selectedCity"
+                            id="selected-city-container"
+                            class="flex-align-justify-center city-select disabled"
+                        >
+                            <div id="selected-city">
+                                <h3 >You currently have selected:</h3>
+                                <div class="flex-align-justify-center">
+                                    <h3 id="selected-city-span"></h3>
+                                    <span
+                                        {{ 
+                                            stimulus_controller('submit-modal', {
+                                                title: 'Do you want to proceed?',
+                                                text: 'Do you want to discard your selection?',
+                                                cancelBtnTxt: 'Keep',
+                                                confirmBtnTxt: 'Discard',
+                                                successTitle: 'Action successful',
+                                                successText: 'Please select a city of your choice.',
+                                                successTimer: 2000,
+                                                showAbort: true,
+                                                abortTimer: 2000
+
+                                            })
+                                            |
+                                            stimulus_controller('home') 
+                                        }}
+                                        {{
+                                            stimulus_action (
+                                                'submit-modal', 'defaultConfirmModal', 'home:unselectClicked'
+                                            )
+                                            |
+                                            stimulus_action (
+                                                'home', 'unselectClicked', 'click'
+                                            )
+                                        }}
+                                        class="close-x h3"
+                                        style="margin-left: 5px;"
+                                        
+                                    >
+                                        X
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div id="partnerPresentation" class="disabled"></div>
                 </div>
-                <div id="partnerPresentation" class="disabled"></div>
+            </div>
+            <!-- Restaurant suggestions -->
+            <div id="restaurant-suggestions-container">
+                <turbo-frame id="restaurantSuggestions">
+                    <div id="suggestions-wrapper-container">
+                        <h3 id="restaurant-suggestions-header-top" class="mb-3">Enter your zip code</h3>
+                        <img id="restaurant-suggestions-std-img" src="{{ asset('images/restaurant.svg') }}" />
+                        <h3 id="restaurant-suggestions-header-bottom" class="mt-3 text-center">to get inpsired by some suggestions.</h3>
+                    </div>
+                </turbo-frame>
+            </div>
+            <a class="d-none" id="restaurantSuggestionsLink" href="" data-turbo-frame="restaurantSuggestions"></a>
+        </div>
+        <div id="restaurants-container" class="container">
+            <div id="restaurants">
+                <div id="restaurants-wrapper-container">
+                    <h3 id="restaurants-header-top" class="mb-3">Enter your zip code</h3>
+                    <img id="restaurants-std-img" src="{{ asset('images/restaurant.svg') }}" />
+                    <h3 id="restaurants-header-bottom" class="mt-3">to find restaurants nearby.</h3>
+                </div>
             </div>
         </div>
+        
         <BR />
         <turbo-frame
             id="home_carousel"

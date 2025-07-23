@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_USER') %}
+    <div class="container">
+        {{
+            component('EditUser', {
+                user: user
+            })
+        }}
+    </div>
+{% else %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="alert alert-danger" role="alert">
+            You are not eligible to view this page.
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

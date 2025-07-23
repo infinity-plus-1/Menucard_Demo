@@ -1,0 +1,473 @@
+<div{{ attributes }}>
+    <h2>Your Orders</h2>
+        {% if pager %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Filter orders</span>
+                <input
+                    class="col"
+                    id="filterOrdersInput"
+                    data-model="debounce(300)|filter"
+                    placeholder="Filter orders..."
+                    data-action="live#action"
+                    data-live-action-param="filterOrders"
+                />
+            </div>
+            <BR />
+
+            {# Order cards #}
+            {% if pager is not empty %}
+                <div
+                    id="dish-cards"
+                    {{stimulus_controller('dish-cards')}}
+
+                >
+                    <input
+                        type="text"
+                        id="proximity-input"
+                        {{ stimulus_target('dish-cards', 'proximityValue') }}
+                        class="d-none"
+                        data-model="proximity"
+                    />
+                    {% for order in pager %}
+                        <div
+                            class="dish-card m-1"
+                            {{
+                                stimulus_controller(
+                                    'order-list', {
+                                        'order': order.id,
+                                        'cancelLink': path('cancelOrder'),
+                                        'completeLink': path('completeOrder'),
+                                    }
+                                )
+                            }}
+                            {{ stimulus_target('order-list', 'orderElement') }}
+                        >
+                            {# Header #}
+                            <div class="dish-card-header">
+                                <h2 {{ stimulus_target('order-list', 'header') }}>Order: #{{order.id}}</h2>
+                            </div>
+                            <HR />
+                            {# Body #}
+                            <div class="dish-card-body m-1">
+                                <div>
+                                    <span {{ stimulus_target('order-list', 'datetime') }}>{{ order.created|date('Y-m-d H:i') }}</span>
+                                </div>
+                                <HR />
+                                <div>
+                                    {% if isUser %}
+                                        <p>{{ order.company.name }}</p>
+                                    {% else %}
+                                        <p>{{ order.user.forename }} {{ order.user.surname }}</p>
+                                    {% endif %}
+                                </div>
+                                
+                                <HR />
+                                <div>
+                                    {% set total = 0 %}
+                                    {% for partial in order.orderPartials %}
+                                        
+                                        <li>
+                                            {{ partial.dish.name }} | Size: {{ partial.size != '' ? partial.size : 'Default' }}
+                                            {% if partial.note %}<br><small class="text-muted">{{ partial.note }}</small>{% endif %}
+                                            {% set total = total + partial.priceSnapshot %}
+                                        </li>
+                                    {% endfor %}
+                                </div>
+                                
+                                {% set total = 0 %}
+                                {% for partial in order.orderPartials %}
+                                    {% set total = total + partial.priceSnapshot %}
+                                {% endfor %}
+                                <HR />
+                                <div>
+                                    <span>Status: </span>
+                                    {% if order.status.value == 1 %}
+                                        <span class="badge bg-warning text-dark">Open</span>
+                                    {% elseif order.status.value == 2 %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elseif order.status.value == 3 %}
+                                        <span class="badge bg-danger text-light">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-danger text-light">Unknown</span>
+                                    {% endif %}
+                                </div>
+                                <HR />
+                                <p class="dish-price">Total: {{ total|number_format(2, '.', ',') }} €</p>
+
+                                {# Buttons #}
+                                <div class="dish-card-buttons">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        {{ stimulus_action('order-list', 'view', 'click') }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#order-modal"
+                                    >
+                                        Details
+                                    </button>
+                                    {% if order.status.value == 1 %}
+                                        {% if not isUser %}
+                                            <button
+                                                class="btn btn-sm btn-success"
+                                                {{
+                                                    stimulus_target('order-list', 'completeButton') |
+                                                    stimulus_action('order-list', 'complete')
+                                                }}
+                                                disabled
+                                            >
+                                                Complete
+                                            </button>
+                                        {% endif %}
+                                        <button
+                                            class="btn btn-sm btn-danger"
+                                            {{
+                                                stimulus_target('order-list', 'cancelButton') |
+                                                stimulus_action('order-list', 'cancel')
+                                            }}
+                                            disabled
+                                        >
+                                            Cancel
+                                        </button>
+                                    {% elseif order.status.value == 2 %}
+                                        {% if isUser %}
+                                            <button
+                                                class="btn btn-sm btn-outline-primary"
+                                                {{ stimulus_action('order-list', 'rate', 'click') }}
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#order-rate-modal"
+                                            >
+                                                Rate
+                                            </button>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Pagination #}
+                <div class="paginationContainer mt-3">
+                    <div class="maxResultSelector">
+                        <h5>Max orders:</h5>
+                        <div class="btn-group ms-3" {{ stimulus_controller('order-list') }}>
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                style="background-color: #f8f9fa; color: black;"
+                                {{ stimulus_target('order-list', 'leftButton') }}
+                            >
+                                {{maxRes}}
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown"
+                                style="background-color: #f8f9fa; color: black;"
+                                aria-expanded="false"
+                            >
+                                <span class="visually-hidden"></span>
+                            </button>
+
+                            <ul class="dropdown-menu">
+                                <li
+                                    {{
+                                        stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': maxResFirst}) |
+                                        stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': maxResFirst})
+                                    }}
+                                >
+                                    <span class="dropdown-item" role="button">{{ maxResFirst }}</span>
+                                </li>
+                                <li
+                                    {{
+                                        stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': maxResSecond}) |
+                                        stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': maxResSecond})
+                                    }}
+                                >
+                                    <span class="dropdown-item" role="button">{{ maxResSecond }}</span>
+                                </li>
+                                <li 
+                                    {{
+                                        stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': maxResThird}) |
+                                        stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': maxResThird})
+                                    }}
+                                >
+                                    <span class="dropdown-item" role="button">{{ maxResThird }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    {{
+                        pagerfanta(
+                            pager,
+                            'twig',
+                            {
+                                template: 'pagerfanta/list_orders_template.html.twig',
+                                'omitFirstPage': true,
+                                'routeName': 'order_list',
+                                'routeParams': {
+                                    'pending': pending ? 'pending' : 'done',
+                                    'maxRes': maxRes,
+                                },
+                                proximity: proximity,
+                            }
+                        )
+                    }}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    {% if pending %}
+                        You have no pending orders.
+                    {% else %}
+                        You have no completed orders.
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-danger">
+                <p>Error {{ status }}</p>
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+        {# Moved to pagerfanta #}
+    {#<div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Filter orders</span>
+        <input
+            class="col"
+            id="filterOrdersInput"
+            data-model="debounce(300)|filter"
+            placeholder="Filter orders..."
+            data-action="live#action"
+            data-live-action-param="filterOrders"
+        />
+    </div>
+    <BR />
+
+    {# Order cards #}
+    {#{% if orders is not empty %}
+        <div
+            id="dish-cards"
+            {{stimulus_controller('dish-cards')}}
+        >
+            {% for order in orders %}
+                <div
+                    class="dish-card m-1"
+                    {{
+                        stimulus_controller(
+                            'order-list', {
+                                'order': order.id,
+                                'cancelLink': path('cancelOrder'),
+                                'completeLink': path('completeOrder'),
+                            }
+                        )
+                    }}
+                    {{ stimulus_target('order-list', 'orderElement') }}
+                >
+                    {# Header #}
+                    {#<div class="dish-card-header">
+                        <h2 {{ stimulus_target('order-list', 'header') }}>Order: #{{order.id}}</h2>
+                    </div>
+                    <HR />
+
+                    {# Body #}
+                    {#<div class="dish-card-body m-1">
+                        <div>
+                            <span {{ stimulus_target('order-list', 'datetime') }}>{{ order.created|date('Y-m-d H:i') }}</span>
+                        </div>
+                        <HR />
+                        <div>
+                            {% if isUser %}
+                                <p>{{ order.company.name }}</p>
+                            {% else %}
+                                <p>{{ order.user.forename }} {{ order.user.surname }}</p>
+                            {% endif %}
+                        </div>
+                        {#
+                        <HR />
+                        <div>
+                            {% set total = 0 %}
+                            {% for partial in order.orderPartials %}
+                                
+                                <li>
+                                    {{ partial.dish.name }} | Size: {{ partial.size != '' ? partial.size : 'Default' }}
+                                    {% if partial.note %}<br><small class="text-muted">{{ partial.note }}</small>{% endif %}
+                                    {% set total = total + partial.priceSnapshot %}
+                                </li>
+                            {% endfor %}
+                        </div>
+                        #}
+                        {#{% set total = 0 %}
+                        {% for partial in order.orderPartials %}
+                            {% set total = total + partial.priceSnapshot %}
+                        {% endfor %}
+                        <HR />
+                        <div>
+                            <span>Status: </span>
+                            {% if order.status == 1 %}
+                                <span class="badge bg-warning text-dark">Open</span>
+                            {% elseif order.status == 2 %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-danger text-light">Cancelled</span>
+                            {% endif %}
+                        </div>
+                        <HR />
+                        <p class="dish-price">Total: {{ total|number_format(2, '.', ',') }} €</p>
+
+                        {# Buttons #}
+                        {#<div class="dish-card-buttons">
+                            <button
+                                class="btn btn-sm btn-outline-primary"
+                                {{ stimulus_action('order-list', 'view', 'click') }}
+                                data-bs-toggle="modal"
+                                data-bs-target="#order-modal"
+                            >
+                                Details
+                            </button>
+                            {% if order.status == 1 %}
+                                {% if not isUser %}
+                                    <button
+                                        class="btn btn-sm btn-success"
+                                        {{
+                                            stimulus_target('order-list', 'completeButton') |
+                                            stimulus_action('order-list', 'complete')
+                                        }}
+                                        disabled
+                                    >
+                                        Complete
+                                    </button>
+                                {% endif %}
+                                <button
+                                    class="btn btn-sm btn-danger"
+                                    {{
+                                        stimulus_target('order-list', 'cancelButton') |
+                                        stimulus_action('order-list', 'cancel')
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            {% elseif order.status == 2 %}
+                                {% if isUser %} {# Abändern #}
+                                   {# <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        {{ stimulus_action('order-list', 'rate', 'click') }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#order-rate-modal"
+                                    >
+                                        Rate
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+       {# <div class="paginationContainer mt-3">
+            <div class="maxResultSelector">
+                <h5>Max orders:</h5>
+                <div class="btn-group ms-3" {{ stimulus_controller('order-list') }}>
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        style="background-color: #f8f9fa; color: black;"
+                        {{ stimulus_target('order-list', 'leftButton') }}
+                    >
+                        {{maxRes}}
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown"
+                        style="background-color: #f8f9fa; color: black;"
+                        aria-expanded="false"
+                    >
+                        <span class="visually-hidden"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li
+                            {{
+                                stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 1}) |
+                                stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 1})
+                            }}
+                        >
+                            <span class="dropdown-item" role="button">1</span>
+                        </li>
+                        <li
+                            {{
+                                stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 2}) |
+                                stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 2})
+                            }}
+                        >
+                            <span class="dropdown-item" role="button">2</span>
+                        </li>
+                        <li 
+                            {{
+                                stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 3}) |
+                                stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 3})
+                            }}
+                        >
+                            <span class="dropdown-item" role="button">3</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-3">
+                {{ pagerfanta(pager, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
+            </div>
+            {#
+            <nav class="paginationNavigation" aria-label="Page navigation">
+                <ul class="pagination">
+                    <li
+                        class="page-item user-select-none"
+                        data-action="click->live#action"
+                        data-live-action-param="decrement"
+                        role="button"
+                    >
+                        <span class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </span>
+                    </li>
+                    {% for i in 1..pages %}
+                        {% if (i-1) == offset %}
+                            {% set active = " active" %}
+                        {% else %}
+                            {% set active = "" %}
+                        {% endif %}
+                        <li
+                            class="page-item user-select-none{{active}}"
+                            data-action="click->live#action"
+                            data-live-action-param="setPage"
+                            data-live-new-page-param="{{i}}"
+                            role="button"
+                        >
+                            <span class="page-link" href="#">{{i}}</span>
+                        </li>
+                    {% endfor %}
+                    <li
+                        class="page-item user-select-none"
+                        data-action="click->live#action"
+                        data-live-action-param="increment"
+                        role="button"
+                    >
+                        <span class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+            #}
+        {#</div>
+    {% else %}
+        <div class="alert alert-info">
+            {% if pending %}
+                You have no pending orders.
+            {% else %}
+                You have no completed orders.
+            {% endif %}
+        </div>
+    {% endif %}#}
+</div>

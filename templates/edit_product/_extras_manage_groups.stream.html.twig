@@ -1,0 +1,130 @@
+<turbo-stream action="update" target="dish-extras-modal-body">
+    <template>
+        {% if status is defined and status == 200 %}
+            <div>
+                <button
+                    class="btn btn-primary btn-sm"
+                    {{
+                        stimulus_target('extras', 'addGroupButton') |
+                        stimulus_action('extras', 'manageGroups')
+                    }}
+                >Add group</button>
+                <input type="Text" {{ stimulus_target('extras', 'addGroupInput') }} placeholder="Group name" style="display: none;" />
+                <button
+                    class="btn btn-danger btn-sm"
+                    style="display: none;"
+                    {{
+                        stimulus_target('extras', 'abortSaveGroupButton') |
+                        stimulus_action('extras', 'abortAddGroup')
+                    }}
+                >Abort</button>
+                <button
+                    class="btn btn-primary btn-sm"
+                    style="display: none;"
+                    {{
+                        stimulus_target('extras', 'saveGroupButton') |
+                        stimulus_action('extras', 'saveGroup')
+                    }}
+                >Save group</button>
+            </div>
+            <div class="d-flex flex-row flex-wrap justify-content-around">
+                {% for group in groups %}
+                    <div
+                        class="dish-card mb-3"
+                        style="height: auto; margin: 0;"
+                        id="extras-group-{{ group.name }}"
+                    >
+                        <div class="dish-card-header d-flex justify-content-between">
+                            <h1>{{ group.name }}</h1>
+                            <div>
+                                <i
+                                    class="bi bi-pencil cursor-pointer"
+                                    {{
+                                        stimulus_action(
+                                            'extras',
+                                            'editGroup',
+                                            'click',
+                                            { 'editGroupContainer': 'edit-group-container-' ~ loop.index }
+                                        )
+                                    }}
+                                ></i>
+                                <i
+                                    class="bi bi-trash cursor-pointer"
+                                    {{
+                                        stimulus_action(
+                                            'extras',
+                                            'deleteGroup',
+                                            'click',
+                                            { 'identifier': group.id, 'dish': dish.id, 'name': group.name }
+                                        )
+                                    }}
+                                ></i>
+                            </div>
+                        </div>
+                        <div
+                            class="d-none"
+                            id="edit-group-container-{{loop.index}}"
+                        >
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="editGroupNameInput">Name</span>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Group name"
+                                    aria-label="Group name"
+                                    aria-describedby="editGroupNameInput"
+                                    id="edit-group-input-{{loop.index}}"
+                                />
+                            </div>
+                            <button
+                                class="btn btn-primary btn-sm"
+                                {{
+                                    stimulus_action(
+                                        'extras',
+                                        'saveEditGroup',
+                                        'click',
+                                        {
+                                            'identifier': group.name,
+                                            'editGroupInput': 'edit-group-input-' ~ loop.index,
+                                        }
+                                    )
+                                }}
+                            >Save</button>
+                            <button
+                                class="btn btn-primary btn-sm"
+                                {{
+                                    stimulus_action(
+                                        'extras',
+                                        'cancelEditGroup',
+                                        'click',
+                                        {
+                                            'identifier': group.name,
+                                            'editGroupContainer': 'edit-group-container-' ~ loop.index,
+                                            'editGroupInput': 'edit-group-input-' ~ loop.index,
+                                        }
+                                    )
+                                }}
+                            >Cancel</button>
+                        </div>
+                        <p class="dish-card-desc">Extras in this group: {{ group.extras | length }}</p>
+                        <div>
+                            {% for extra in group.extras %}
+                                <p>{{ extra.name }} - {{ extra.price | format_currency('USD', {decimal_always_shown:true}, 'en') }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            {% if message is defined and status is defined %}
+                <div class="alert alert-danger" role="alert">
+                    Error {{ status }}: {{ message }}
+                </div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">
+                    An error occured while trying to load the content.
+                </div>
+            {% endif %}
+        {% endif %}
+    </template>
+</turbo-stream>

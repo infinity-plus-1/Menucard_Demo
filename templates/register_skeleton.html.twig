@@ -1,0 +1,32 @@
+<div
+    class="modal fade"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    {{ stimulus_controller('register') }}
+    {{ stimulus_target('form-modal', 'modal') }}
+>
+    <div
+      class="modal-dialog modal-dialog-centered"
+      {{ stimulus_target('form-modal', 'dialog') }}
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1
+            class="modal-title fs-5"
+            {{ stimulus_target('form-modal', 'title') }}
+          >
+            Modal title
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div {{ stimulus_target('form-modal', 'content') }} class="modal-body"></div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>

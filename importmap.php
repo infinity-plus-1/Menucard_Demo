@@ -50,4 +50,11 @@ return [
     'babel' => [
         'version' => '6.23.0',
     ],
+    '@stimulus-components/popover' => [
+        'version' => '7.0.0',
+    ],
+    'bootstrap-icons/font/bootstrap-icons.min.css' => [
+        'version' => '1.13.1',
+        'type' => 'css',
+    ],
 ];

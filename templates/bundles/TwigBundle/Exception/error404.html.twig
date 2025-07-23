@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}404 - Page not found{% endblock %}
+
+{% block body %}
+    <div class="container" style="text-align: center; height: 100vh; display:">
+        <div style="height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+            <h1 style="color: red; font-size: 6rem;">404!</h1>
+            <h2>Oops! Looks like you’ve wandered off the map.</h2>
+            <p>
+                <span>This page is as lost as a sock in the laundry. Let’s get you </span>
+                <a href="/" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">back</a>
+                <span> on track!</span>
+            </p>
+        </div>
+    </div>
+{% endblock %}

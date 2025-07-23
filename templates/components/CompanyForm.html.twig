@@ -1,0 +1,102 @@
+<div {{ attributes }} >
+    {{ form_start(form, {
+        attr: {
+            'data-action': 'blur->live#update',
+            'enctype': 'multipart/form-data',
+        }
+    }) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.zip) }}
+        {{ form_row(form.city) }}
+        {{ form_row(form.street) }}
+        {{ form_row(form.sn) }}
+        {{ form_row(form.phone) }}
+        {{ form_row(form.website) }}
+        {{ form_row(form.tax) }}
+        <HR />
+        <div
+            class="mb-3"
+            {{ stimulus_controller('company-delivery-zips') }}
+        >
+            <label for="company_form_delivery_zipcodes" class="form-label required">
+                Delivery zipcodes*
+            </label>
+            <input
+                id="company_form_delivery_zipcodes"
+                class="form-control mb-3"
+                placeholder="Enter your delivery zipcodes here..."
+                {{
+                    stimulus_target('company-delivery-zips', 'zipInput') |
+                    stimulus_action('company-delivery-zips', 'queryZips')
+                }}
+                
+            />
+            <div
+                class="alert alert-danger mt-2 d-none"
+                role="alert"
+                {{ stimulus_target('company-delivery-zips', 'errorMsg') }}
+            ></div>
+            <div
+                class="mb-3 zip-dropdown"
+                {{ stimulus_target('company-delivery-zips', 'resultContainer') }}
+            ></div>
+            <label for="company_form_selected_zipcodes" class="form-label required">
+                Selected zipcodes
+            </label>
+            <div
+                id="company_form_selected_zipcodes"
+                {{ stimulus_target('company-delivery-zips', 'selectedContainer') }}
+                class="form-control"
+                data-live-ignore
+            ></div>
+            {{ form_row(form.deliveryZips, {
+                attr: {
+                    'data-company-delivery-zips-target': 'deliveryZips'
+                }
+            }) }}
+        </div>
+        
+        <HR />
+        {% if form.vars.value.logo %}
+            <img
+                src="{{ form.vars.value.logo }}?v={{ random() }}"
+                style="width: 150px; border-radius: 75px;"
+                loading="eager"
+            />
+        {% else %}
+            Logo unset
+        {% endif %}
+        <BR />
+        <BR />
+        {{ form_row(form.logo) }}
+        <HR />
+        {% if status is defined and status != 3 and message is defined and message != '' %}
+            <BR />
+            <div class="alert {{ status is same as(1) ? 'alert-success' : 'alert-danger' }}">{{ message }}</div>
+            {% if status == 1 %}
+                <a
+                    href="{{ path('company') }}"
+                    {{
+                            stimulus_controller('reload-form')
+                            |
+                            stimulus_target('reload-form', 'reloadLink')
+                    }}
+                    style="display: none;"
+                ></a>
+            {% endif %}
+        {% endif %}
+        <button
+                id="companySaveBtn"
+                type="button"
+                class="btn btn-primary {{ not this.validForm ? 'disabled-btn' : '' }}"
+                data-action="live#action"
+                data-live-action-param="files|save"
+                data-loading="addClass(disabledBtn) addAttribute(disabled)"
+                data-button-type="formSubmit"
+        >Save</button>
+    {{ form_end(form) }}
+    
+    
+</div>

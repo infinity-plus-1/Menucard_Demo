@@ -3,14 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], errorPath: 'email', message: 'An account with this email already exists.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -18,14 +19,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
-
-    /**
-     * @var string The name of the user or company
-     */
-    #[ORM\Column(length: 50)]
-    private ?string $name = null;
 
     /**
      * @var list<string> The user roles
@@ -38,6 +33,45 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var string Forename
+     */
+    #[ORM\Column(length: 50)]
+    private ?string $forename = null;
+
+    /**
+     * @var string Surname
+     */
+    #[ORM\Column(length: 50)]
+    private ?string $surname = null;
+
+    /**
+     * @var string Street
+     */
+    #[ORM\Column(length: 60)]
+    private ?string $street = null;
+
+    /**
+     * @var string Street number
+     */
+    #[ORM\Column(length: 4)]
+    private ?string $sn = null;
+
+    /**
+     * @var string Zipcode
+     */
+    #[ORM\Column(length: 10)]
+    private ?string $zipcode = null;
+
+    /**
+     * @var string City
+     */
+    #[ORM\Column(length: 60)]
+    private ?string $city = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Company $company = null;
 
     public function getId(): ?int
     {
@@ -56,12 +90,74 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getName(): ?string {
-        return $this -> name;
+    public function getForename(): ?string
+    {
+        return $this->forename;
     }
 
-    public function setName(string $name): static {
-        $this -> name = $name;
+    public function setForename(string $forename): static
+    {
+        $this->forename = $forename;
+
+        return $this;
+    }
+
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    public function setSurname(string $surname): static
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(string $street): static
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getSn(): ?string
+    {
+        return $this->sn;
+    }
+
+    public function setSn(string $sn): static
+    {
+        $this->sn = $sn;
+
+        return $this;
+    }
+
+    public function getZipcode(): ?string
+    {
+        return $this->zipcode;
+    }
+
+    public function setZipcode(string $zipcode): static
+    {
+        $this->zipcode = $zipcode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }
@@ -93,9 +189,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @param list<string> $roles
      */
-    public function setRoles(array $roles): static
+    public function setRoles(array|string $roles): static
     {
-        $this->roles = $roles;
+        $this->roles = is_string($roles) ? [$roles] : $roles;
 
         return $this;
     }
@@ -122,5 +218,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
+
+        return $this;
     }
 }

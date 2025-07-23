@@ -1,0 +1,74 @@
+<turbo-frame id="dish-frame">
+    <div
+        class="container"
+        {{
+            stimulus_controller('extras', {
+                'addExtraLink': '/dish/addExtra',
+                'dish': dish.id,
+                'manageGroupLink': '/dish/manageGroups',
+                'deleteGroupLink': '/dish/deleteGroup',
+                'deleteExtraLink': '/dish/deleteExtra',
+                'extras': extras,
+                'groups': groups,
+            })
+        }}
+    >
+        {{
+            component('EditProduct', {
+                product: dish,
+                groups: groups,
+                extras: extras,
+            })
+        }}
+        {# Modal #}
+        {# This modal is used to add extras to the dish #}
+        <div
+            class="modal fade"
+            id="dish-extras-modal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="dish-extras-modal-label"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1
+                            class="modal-title fs-5"
+                            id="dish-extras-modal-label"
+                            {{ stimulus_target('extras', 'modalLabel') }}
+                        ></h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            aria-label="Close"
+                            {{ stimulus_action('extras', 'closeModal') }}
+                        ></button>
+                    </div>
+                    <div
+                        id="dish-extras-modal-body"
+                        class="modal-body"
+                        {{ stimulus_target('extras', 'modalBody') }}
+                    >
+                        Loading...
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="dish-extras-modal-abort-btn"
+                            {{ stimulus_action('extras', 'closeModal') }}
+                        >Close</button>
+                        <button
+                            type="button"
+                            id="dish-extras-modal-submit-btn"
+                            class="btn btn-primary"
+                            {{ stimulus_target('extras', 'submitBtn') }}
+                        >OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</turbo-frame>

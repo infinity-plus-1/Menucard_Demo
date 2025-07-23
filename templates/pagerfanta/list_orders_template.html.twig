@@ -1,0 +1,88 @@
+{%- extends '@Pagerfanta/twitter_bootstrap4.html.twig' -%}
+
+{%- block pager -%}
+
+    {# Previous Page Link #}
+    {%- if pagerfanta.hasPreviousPage() -%}
+        {%- set path = route_generator.route(pagerfanta.getPreviousPage()) -%}
+        {%- set page = pagerfanta.getPreviousPage() -%}
+        {{- block('previous_page_link') -}}
+    {%- else -%}
+        {{- block('previous_page_link_disabled') -}}
+    {%- endif -%}
+
+    {# First Page Link #}
+    {%- if start_page > 1 -%}
+        {%- set page = 1 -%}
+        {%- set path = route_generator.route(page) -%}
+        {{- block('page_link') -}}
+    {%- endif -%}
+
+    {# Separator, creates a "..." separator to limit the number of items if we are starting beyond page 3 #}
+    {%- if start_page > 3 -%}
+        {{- block('ellipsis') -}}
+    {%- endif -%}
+
+    {# Page Links #}
+    {%- for page in range(start_page, end_page) -%}
+        {%- set path = route_generator.route(page) -%}
+        {%- if page == current_page -%}
+            {{- block('current_page_link') -}}
+        {%- else -%}
+            {{- block('page_link') -}}
+        {%- endif -%}
+    {%- endfor -%}
+
+    {# Separator, creates a "..." separator to limit the number of items if we are over 3 pages away from the last page #}
+    {%- if end_page < (nb_pages - 2) -%}
+        {{- block('ellipsis') -}}
+    {%- endif -%}
+
+
+
+    {# Next Page Link #}
+    {%- if pagerfanta.hasNextPage() -%}
+        {%- set path = route_generator.route(pagerfanta.getNextPage()) -%}
+        {%- set page = pagerfanta.getNextPage() -%}
+        {{- block('next_page_link') -}}
+    {%- else -%}
+        {{- block('next_page_link_disabled') -}}
+    {%- endif -%}
+{%- endblock pager -%}
+
+{% block page_link %}
+    <li
+        class="page-item"
+        data-action="click->live#action"
+        data-live-action-param="setPage"
+        data-live-new-page-param="{{page}}"
+        role="button"
+    >
+        <button class="page-link">{{- page -}}</a>
+    </li>
+{% endblock %}
+
+{%- block previous_page_link -%}
+    <li
+        class="page-item"
+        data-action="click->live#action"
+        data-live-action-param="setPage"
+        data-live-new-page-param="{{page}}"
+    >
+        <button role="button" rel="prev" class="page-link">{{- block('previous_page_message') -}}</a>
+    </li>
+{%- endblock previous_page_link -%}
+
+{%- block next_page_link -%}
+    <li
+        class="page-item"
+        data-action="click->live#action"
+        data-live-action-param="setPage"
+        data-live-new-page-param="{{page}}"
+    >
+        <button role="button" rel="prev" class="page-link">{{- block('next_page_message') -}}</a>
+    </li>
+{%- endblock next_page_link -%}
+
+                        
+                        

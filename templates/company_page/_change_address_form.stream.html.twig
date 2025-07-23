@@ -1,0 +1,60 @@
+<turbo-stream action="update" target="food-menu-modal-body">
+    <template>
+        <div class="container">
+        {% if status is defined and status == 200 %}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="food-menu-change-street">Street*</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter your street here..."
+                    aria-label="Street"
+                    aria-describedby="food-menu-change-street"
+                    required
+                    id="deliveryStreet"
+                >
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="food-menu-change-sn">Street number*</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="And your street number here..."
+                    aria-label="Sn"
+                    aria-describedby="food-menu-change-sn"
+                    required
+                    id="deliverySn"
+                >
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="food-menu-change-city">City</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="City..."
+                    aria-label="City"
+                    aria-describedby="food-menu-change-city"
+                    required
+                    id="deliveryCity"
+                >
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="food-menu-change-zip">Postal code</span>
+                <input
+                    type="text"
+                    class="form-control"
+                    value="{{ zip }}"
+                    disabled
+                    aria-label="Zip"
+                    aria-describedby="food-menu-change-zip"
+                >
+            </div>
+            <div class="alert alert-warning d-none" role="alert" id="food-menu-address-form-warning"></div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                An error occured while trying to load the form.
+            </div>
+        {% endif %}
+        </div>
+    </template>
+</turbo-stream>

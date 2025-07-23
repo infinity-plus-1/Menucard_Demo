@@ -1,4 +1,118 @@
-{#{% form_theme form 'foundation_5_layout.html.twig' %}
+{#{% form_theme form 'foundation_5_layout.html.twig' %}#}
+<turbo-frame id="registration_form">
+    {{ form_start(form) }}
 
-{{ form_start(form) }}
-{{ form_end(form) }}#}
+        <div class="row">
+            <div class="col">
+                {{ form_label(form.email) }}
+                {{ form_errors(form.email) }}
+                {{ form_widget(form.email) }}
+            </div>
+        </div>
+        {% if width >= 576 %}
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.forename) }}
+                    {{ form_errors(form.forename) }}
+                    {{ form_widget(form.forename) }}
+                </div>
+                <div class="col">
+                    {{ form_label(form.surname) }}
+                    {{ form_errors(form.surname) }}
+                    {{ form_widget(form.surname) }}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.forename) }}
+                    {{ form_errors(form.forename) }}
+                    {{ form_widget(form.forename) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.surname) }}
+                    {{ form_errors(form.surname) }}
+                    {{ form_widget(form.surname) }}
+                </div>
+            </div>
+        {% endif %}
+        {% if width >= 576 %}
+            <div class="row">
+                <div class="col-10">
+                    {{ form_label(form.street) }}
+                    {{ form_errors(form.street) }}
+                    {{ form_widget(form.street) }}
+                </div>
+                <div class="col-2">
+                    {{ form_label(form.sn) }}
+                    {{ form_errors(form.sn) }}
+                    {{ form_widget(form.sn) }}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.street) }}
+                    {{ form_errors(form.street) }}
+                    {{ form_widget(form.street) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.sn) }}
+                    {{ form_errors(form.sn) }}
+                    {{ form_widget(form.sn) }}
+                </div>
+            </div>
+        {% endif %}
+        {% if width >= 576 %}
+            <div class="row">
+                <div class="col-4">
+                    {{ form_label(form.zipcode) }}
+                    {{ form_errors(form.zipcode) }}
+                    {{ form_widget(form.zipcode) }}
+                </div>
+                <div class="col-8">
+                    {{ form_label(form.city) }}
+                    {{ form_errors(form.city) }}
+                    {{ form_widget(form.city) }}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.zipcode) }}
+                    {{ form_errors(form.zipcode) }}
+                    {{ form_widget(form.zipcode) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.city) }}
+                    {{ form_errors(form.city) }}
+                    {{ form_widget(form.city) }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                {{ form_label(form.roles) }}
+                {{ form_errors(form.roles) }}
+                {{ form_widget(form.roles) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_errors(form.password) }}
+                {{ form_widget(form.password) }}
+            </div>
+        </div>
+        <div class="modal-footer">
+            {{ form_row(form.cancelButton, { 'label': 'Cancel' }) }}
+            {{ form_row(form.submitButton, { 'label': 'Register' }) }}
+        </div>
+
+    {{ form_end(form) }}
+</turbo-frame>

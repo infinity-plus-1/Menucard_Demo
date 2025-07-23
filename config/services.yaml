@@ -4,7 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-<<<<<<< HEAD
 services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
         arguments:
@@ -18,10 +17,6 @@ services:
               port: '%env(int:REDIS_PORT)%'
               password: '%env(REDIS_PASSWORD)%'
 
-=======
-
-services:
->>>>>>> a8ada84 (Add initial set of files)
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -35,13 +30,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-<<<<<<< HEAD
+            - '../src/Services/Geo/pcde.php'
 
 
             # uncomment the following if your Redis server requires a password
             
-=======
->>>>>>> a8ada84 (Add initial set of files)
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -1,0 +1,15 @@
+<turbo-frame id="dashboard_window">
+    {% if is_granted('ROLE_COMPANY') %}
+        <div class="container">
+            {{
+                component('CompanyForm')
+            }}
+        </div>
+    {% else %}
+        <div class="container position-absolute top-50 start-50 translate-middle">
+            <div class="alert alert-danger" role="alert">
+                You are not eligible to view this page.
+            </div>
+        </div>
+    {% endif %}
+</turbo-frame>

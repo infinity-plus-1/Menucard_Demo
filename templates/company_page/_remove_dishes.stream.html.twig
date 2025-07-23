@@ -1,0 +1,61 @@
+<turbo-stream action="update" target="food-menu-modal-body">
+    <template>
+        <div
+            class="container"
+            {{ stimulus_controller('food-quantity-selector', {'id': dishObj.id }) }}
+            data-action="food-quantity-selector:removeDish->food-cart-collector#removeDish"
+        >
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white text-center">
+                    <h2 class="h5 mb-0">{{ dishObj.name }} - {{ dishObj.price | format_currency('USD', {decimal_always_shown:true}, 'en')}}</h2>
+                </div>
+            </div>
+
+            {% for uuid, dish in dishes %}
+                <div class="card mb-4" id="remove-dish-{{ uuid }}">
+                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="h5 mb-0">#{{ loop.index }}</h2>
+                        <h5 class="h5 mb-0">Total: {{ dish.price | format_currency('USD', {decimal_always_shown:true}, 'en')}}</h4>
+                        <span
+                            class="ml-1 selectedZipElementRemoveButton"
+                            style="font-size: 1.5rem;"
+                            {{
+                                stimulus_action(
+                                    'food-quantity-selector',
+                                    'removeDish',
+                                    'click',
+                                    {
+                                        'uuid': uuid,
+                                        'dish': dishObj.id,
+                                    }
+                                )
+                            }}
+                        >X</span>
+                    </div>
+                    <div class="card-body">
+                        {% if dish.size.size %}
+                            <h5>Size:</h5>
+                            <p>
+                                {{ dish.size.size }} (+ {{ dish.size.price | format_currency('USD', {decimal_always_shown:true}, 'en') }} )
+                            </p>
+                            <HR />
+                        {% endif %}
+                        {% for group in dish.groups %}
+                            <h5>{{ group.groupName }}</h5>
+                            <p>
+                                {{ group.extra.extraName }} (+ {{ group.extra.price | format_currency('USD', {decimal_always_shown:true}, 'en') }} )
+                            </p>
+                            <HR />
+                        {% endfor %}
+                        <h5>Extras:</h5>
+                        {% for extra in dish.extras %}
+                            <p>
+                                {{ extra.extraName }} (+ {{ extra.price | format_currency('USD', {decimal_always_shown:true}, 'en') }} )
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </template>
+</turbo-stream>

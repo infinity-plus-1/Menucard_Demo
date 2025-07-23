@@ -689,5 +689,28 @@ function colorBrightness(color, multiplier) {
         (Math.floor(Math.min(b * multiplier, 255))).toString(16).padStart(2, '0');
 }
 
+function getJsonResponseMessage(response) {
+    const defaultMsg = 'An unknown error occured';
+    if (response && typeof response.getResponseHeader !== 'undefined') {
+        const contentType = response.getResponseHeader("Content-Type");
+        let jsonObj = null;
+        if (contentType && contentType.includes("application/json")) {
+            try {
+                jsonObj = JSON.parse(response.responseJSON);
+            } catch (error) {
+                //Test if the responseJSON is already a valid json object
+                if (typeof response.responseJSON !== 'undefined' && typeof response.responseJSON.message !== 'undefined') {
+                    jsonObj = response.responseJSON;
+                }
+            }
+        }
+        const msg = (jsonObj && typeof jsonObj.message !== 'undefined')
+            ?  jsonObj.message
+            : defaultMsg
+        ;
+        return msg;
+    }
+    return defaultMsg;
+}
 
 /**     End Tools */

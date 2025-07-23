@@ -1,0 +1,230 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{company.name}}Menu card{% endblock %}
+
+{% block body %}
+<div
+    id="fh5co-menus"
+    data-section="menu"
+    class="animated"
+    {{
+        stimulus_controller (
+            'food-cart-collector',
+            {
+                'prepareLink': path('persist_order'),
+                'finalizeLink': '/finalize',
+                'id': company.id,
+                'changeAddressLink': '/_change_address_form',
+                'addDishToCartLink': path('_addDishToCart'),
+                'removeDishesFromCartLink': path('_removeDishesFromCart'),
+                'showRatingsLink': path('showRatings'),
+                'zip': zip,
+            }
+        ) |
+        stimulus_action('food-cart-collector', 'gatherFood', 'food-quantity-selector:updateDishSelector')
+    }}
+>
+    {# Checkout #}
+    {% if is_granted('ROLE_USER') and inDeliveryRange %} {# abändern #}
+        <div
+            class="checkout-canvas offcanvas show offcanvas-bottom"
+            tabindex="-1"
+            id="offcanvasBottom"
+            data-bs-scroll="true"
+            data-bs-backdrop="false"
+            aria-labelledby="offcanvasBottomLabel"
+        >
+            <div class="offcanvas-header" style="justify-content: center;">
+                <h5 class="offcanvas-title" id="offcanvasBottomLabel">Checkout</h5>
+            </div>
+            <div class="offcanvas-body small checkout-canvas-body">
+                <div class="dishTotalSums">
+                <span>
+                    Total dishes:
+                    <span {{ stimulus_target('food-cart-collector', 'countSum') }}>0</span>
+                </span>
+                <button
+                    type="button" style="font-size: .7rem; background-color: #fb6e14; border-color: #fb6e14;"
+                    class="btn btn-primary"
+                    {{ stimulus_target('food-cart-collector', 'orderButton') }}
+                    {{ stimulus_action('food-cart-collector', 'prepareOrder') }}
+                    disabled
+                >
+                    Order
+                </button>
+                <span>
+                    Total cash:
+                    <span {{ stimulus_target('food-cart-collector', 'cashSum') }}>0.00</span>
+                    $
+                </span>
+            </div>
+            </div>
+        </div>
+        <a id="dish-link" href="" data-turbo-frame="dish-frame"></a>
+        <div id="dish-modal" class="modal fade" style="display: none;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div id="dish-modal-header-content"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <turbo-frame id="dish-frame">...</turbo-frame>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div id="food-menu-main-container" class="container">
+
+        {# Delivery warning #}
+        {% if not inDeliveryRange %}
+            {% if isCompanyAccount %}
+                {% if not personalView %}
+                    <div class="alert alert-warning mt-3">
+                        You can't place orders with commercial accounts.
+                    </div>
+                {% endif %}
+            {% elseif zip %}
+                <div class="alert alert-warning mt-3">
+                    This restaurant does not deliver to your location. Please head back and choose another restaurant or postal code.
+                </div>
+            {% else %}
+                <div class="alert alert-warning mt-3">
+                    Please log in to place an order.
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {# Header #}
+        <div class="mt-3">
+            <div class="company-header-container">
+                <div class="company-header-img-container">
+                    <img class="company-header-img" src="/{{company.logo}}" />
+                </div>
+                <div
+                    class="company-header-information-container cursor-pointer"
+                    {{ stimulus_action('food-cart-collector', 'showRatings', 'click') }}
+                >
+                    <h2>{{company.name}}</h2>
+                    {% if company.averageRating > 0 %}
+                        {% set ratingCounter = company.averageRating %}
+                        {% for i in 1..company.averageRating %}
+                            {% set ratingCounter = ratingCounter - 1 %}
+                            <i class="bi bi-star-fill" style="color: gold;"></i>
+                        {% endfor %}
+                        {% if ratingCounter > 0.5 and ratingCounter < 1.0 %}
+                            <i class="bi bi-star-half" style="color: gold;"></i>
+                        {% endif %}
+                    {% else %}
+                        <i class="bi bi-star" style="color: gold;"></i>
+                    {% endif %}
+                    <span>({{company.totalRatings}})</span>
+                </div>
+            </div>
+        </div>
+
+        {# Address #}
+        {% if inDeliveryRange %}
+            <div class="row mt-4 align-items-center">
+                <div class="col-8 text-center">
+                    <span class="fw-bold">Delivery Address: </span>
+                    <span {{ stimulus_target('food-cart-collector', 'deliveryStreet') }}>{{ user.street }} </span>
+                    <span {{ stimulus_target('food-cart-collector', 'deliverySn') }}>{{ user.sn }}, </span>
+                    <p>
+                        <span {{ stimulus_target('food-cart-collector', 'deliveryZip') }}>{{ user.zipcode }} </span>
+                        <span {{ stimulus_target('food-cart-collector', 'deliveryCity') }}>{{ user.city }}</span>
+                    </p>
+                </div>
+                <div class="col text-start">
+                    <button
+                        role="button"
+                        class="btn btn-primary btn-sm"
+                        {{ stimulus_action('food-cart-collector', 'changeAddress') }}
+                    >
+                        Change Address
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Menu #}
+        <div class="row text-center fh5co-heading row-padded">
+            <div class="col-md-8 col-md-offset-2">
+                <h3 class="heading to-animate fadeInUp animated">Food Menu</h3>
+            </div>
+        </div>
+        <div class="row row-padded">
+            {% for category in sortedDishes %}
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="row text-center fh5co-heading row-padded">
+                        <div class="col-md-8 col-md-offset-2">
+                            <h3 style="font-size: 30px;" class="heading to-animate fadeInUp animated">{{category.category}}</h3>
+                        </div>
+                    </div>
+                </div>
+                {% for type, dishes in category %}
+                    {% if type != 'category' %}
+                        {% include "company_page/type_fragment.html.twig" with {'type': type, 'dishes': dishes, 'inDeliveryRange': inDeliveryRange} %}
+                    {% endif %}
+                {% endfor %}
+                
+            {% endfor %}
+            
+        </div>
+
+        {# Modal #}
+        {# This modal is loaded with different content, like changing the address or adding a dish to the cart #}
+        <div
+            class="modal fade"
+            id="food-menu-modal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="food-menu-modal-label"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1
+                            class="modal-title fs-5"
+                            id="food-menu-modal-label"
+                            {{ stimulus_target('food-cart-collector', 'modalLabel') }}
+                        ></h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            {{ stimulus_action('food-cart-collector', 'closeModal') }}
+                        ></button>
+                    </div>
+                    <div
+                        id="food-menu-modal-body"
+                        class="modal-body"
+                        {{ stimulus_target('food-cart-collector', 'modalBody') }}
+                    >
+                        Loading...
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            id="food-menu-modal-abort-btn"
+                            data-bs-dismiss="modal"
+                            {{ stimulus_action('food-cart-collector', 'closeModal') }}
+                        >Close</button>
+                        <button
+                            type="button"
+                            id="food-menu-modal-submit-btn"
+                            class="btn btn-primary"
+                            {{ stimulus_target('food-cart-collector', 'submitBtn') }}
+                        >OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

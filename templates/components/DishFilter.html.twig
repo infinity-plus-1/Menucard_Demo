@@ -1,0 +1,49 @@
+<div{{ attributes }}>
+    <input type="text" class="form-control" data-model="debounce(250)|filter" placeholder="Filter your dishes by name, category or type" />
+    <BR />
+    <div
+        id="dish-cards"
+        {{stimulus_controller('dish-cards')}}
+    >
+        {% for dish in this.dishes %}
+            <div
+                class="dish-card"
+                data-dish-id="{{dish.id}}"
+                {{ stimulus_controller('dish', { id: dish.id }) }}
+            >
+                <img src="/{{dish.img}}" alt="{{dish.name}}" style="width:100%" />
+                <div class="dish-card-header">
+                    <h1>{{dish.name|u.truncate(23, '...')}}</h1>
+                </div>
+                <p class="dish-price">{{dish.price | format_currency('USD', {decimal_always_shown:true}, 'en') }}</p>
+                <p id="dish-desc-{{dish.id}}" class="dish-card-desc">{{dish.description}}</p>
+                <div class="dish-card-buttons">
+                    <p>
+                        <button
+                            {{ stimulus_action('dish', 'view') }}
+                            data-bs-toggle="modal"
+                            data-bs-target="#dish-modal"
+                        >
+                            Preview
+                        </button>
+                    </p>
+                    <p>
+                        <button
+                            {{ stimulus_action('dish', 'edit') }}
+                            data-bs-toggle="modal"
+                            data-bs-target="#dish-modal"
+                        >
+                            Edit
+                        </button>
+                    </p>
+                    <p>
+                        {% component DeleteProduct with {
+                            dishId: dish.id
+                        } %}
+                        {% endcomponent %}
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

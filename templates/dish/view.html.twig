@@ -1,0 +1,62 @@
+<turbo-frame id="dish-frame">
+    {% if is_granted('ROLE_USER') %}
+        <div class="container">
+            {% if dish %}
+            <div class="row">
+                <div class="col-8">
+                    <img src="/{{dish.img}}" alt="{{dish.name}}" style="width: 100%; object-fit: cover;" />
+                </div>
+                <div class="col-4">
+                    <div>
+                        <span style="font-family: 'Inter'; font-weight: 200; color: dodgerblue;">
+                            {{dish.category.value}} / {{dish.type.value}}
+                        </span>
+                    </div>
+                    <HR />
+                    <div>
+                        <h1 style="font-family: 'Inter'; font-weight: 300;">
+                            {{dish.name}}
+                        </h1>
+                    </div>
+                    <BR />
+                    <div>
+                        <span style="font-family: 'Inter';">
+                            {{dish.description}}
+                        </span>
+                    </div>
+                    <BR />
+                    <HR />
+                    {% if dish.sizes | length > 0 %}
+                        <div>
+                            <p>
+                                Portion sizes
+                            </p>
+                            <div>
+                                {% for size, price in dish.sizes %}
+                                    {% if price > 0 %}
+                                        <button class="btn btn-outline-dark" disabled>{{size}}</button>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <HR />
+                    {% endif %}
+                    <div>
+                        <h3 style="font-family: 'Inter'; font-weight: 200;">
+                            {{dish.price | format_currency('USD', {decimal_always_shown:true}, 'en') }}
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+                <div class="alert alert-danger">You are not eligible to preview this dish.</div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="container position-absolute top-50 start-50 translate-middle">
+            <div class="alert alert-danger" role="alert">
+                You are not eligible to view this page.
+            </div>
+        </div>
+    {% endif %}
+</turbo-frame>

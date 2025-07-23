@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
-import { useDebounce } from 'stimulus-use'
+import { useDebounce } from 'stimulus-use';
+import Swal from 'sweetalert2';
 
 export default class extends Controller {
 
@@ -22,6 +23,17 @@ export default class extends Controller {
 
     connect() {
         useDebounce(this);
+        this.restaurantSuggestionsSnapshot = '';
+        this.restaurantsSnapshot = '';
+        const restaurantSuggestionsContainer = $('#restaurantSuggestions');
+        if (restaurantSuggestionsContainer.length === 1) {
+            this.restaurantSuggestionsSnapshot = restaurantSuggestionsContainer.html();
+        }
+
+        const restaurants = $('#restaurants');
+        if (restaurants.length === 1) {
+            this.restaurantsSnapshot = restaurants.html();
+        }
     }
 
     gotoProduct() {
@@ -29,24 +41,59 @@ export default class extends Controller {
     }
 
     selectCityPostalCode(e) {
-        this.selectedCityValue = $(e.currentTarget).attr('data-home-zip-code-value');
-        $('#postcode-container').addClass('disabled');
-        $('#selected-city-container').removeClass('disabled');
-        $('#selected-city-span').text(this.selectedCityValue);
+        
+        const link = $('#restaurantSuggestionsLink');
+        const turboFrame = $('#restaurantSuggestions');
+        if (link.length === 1 && turboFrame.length === 1) {
+            this.selectedCityValue = $(e.currentTarget).attr('data-home-zip-code-value');
+            const selectedSplittedValue = this.selectedCityValue.split(' ');
+            if (Array.isArray(selectedSplittedValue) && selectedSplittedValue.length > 1) {
+                const zip = selectedSplittedValue[0];
+                link.attr('href', `/listSuggestedRestaurants/${zip}`);
+                link.get(0).click();
+                $('#postcode-container').addClass('disabled');
+                $('#selected-city-container').removeClass('disabled');
+                $('#selected-city-span').text(this.selectedCityValue);
+                turboFrame.removeClass('d-none');
+                $.ajax({
+                    method: 'GET',
+                    url: `/restaurants/${zip}`
+                }).done((response) => {
+                    Turbo.renderStreamMessage(response);
+                }).fail((response) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: `An unknown error occured.`,
+                    });
+                });
+            }
+        }
     }
 
     unselectClicked() {
         this.dispatch('unselectClicked', { detail: {
-            callback: this.unselectCityPostalCode
+            callback: this.unselectCityPostalCode,
+            callbackParams: this,
         }});
     }
 
-    unselectCityPostalCode() {
+    unselectCityPostalCode(_this) {
         return new Promise ((resolve, reject) => {
             try {
                 $('#selected-city-container').addClass('disabled');
                 $('#postcode-container').removeClass('disabled');
                 $('#selected-city-span').text('');
+
+                const restaurantSuggestionsContainer = $('#restaurantSuggestions');
+                if (restaurantSuggestionsContainer.length === 1) {
+                    restaurantSuggestionsContainer.html(_this.restaurantSuggestionsSnapshot);
+                }
+
+                const restaurants = $('#restaurants');
+                if (restaurants.length === 1) {
+                    restaurants.html(_this.restaurantsSnapshot);
+                }
                 resolve();
             } catch (error) {
                 reject(error)
@@ -91,7 +138,6 @@ export default class extends Controller {
             })
             .catch(function (error) {
                 $('#zipcode-error').removeClass('disabled');
-                console.log(error);
             });
         }
         else if (zipInputValue == '') {
