@@ -114,17 +114,12 @@ class DishController extends AbstractController
     #[Route('/view/{id}', name: 'view_dish')]
     public function viewDish(EntityManagerInterface $em, Request $request): Response
     {
-        dump(' INERE');
         $id = $request->attributes->get('id');
-        $dish = $this->getDish($id, $em);
-
-        dump($dish);
+        $dish = $em->getRepository(Dish::class)->find($id);
 
         if ($dish instanceof Dish) {
             $dish->setSizes(array_filter($dish->getSizes(), fn($value) => intval($value) > 0));
         }
-
-        dump($dish);
 
         return $this->render('dish/view.html.twig', [
             'dish' => $dish,

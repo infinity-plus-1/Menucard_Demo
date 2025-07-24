@@ -92,9 +92,9 @@ export default class extends Controller {
         }
     }
 
-    gotoRestaurant(restaurant) {
-        if (restaurant && typeof restaurant.params !== 'undefined' && typeof restaurant.params.restaurant !== 'undefined') {
-            Turbo.visit(`/company/${restaurant.params.restaurant}`);
+    gotoRestaurant(params) {
+        if (params && typeof params.params !== 'undefined' && typeof params.params.restaurant !== 'undefined' && this.zipValue > 0) {
+            Turbo.visit(`/company/${params.params.restaurant}?zip=${this.zipValue}`);
         }
     }
 

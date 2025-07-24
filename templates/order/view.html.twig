@@ -18,11 +18,11 @@
                         {% if is_granted('ROLE_COMPANY') %}
                             <div class="row">
                                 <div class="col-1"><i class="bi bi-geo-alt me-1"></i></div>
-                                <div class="col-11">{{ order.user.street }} {{ order.user.sn }},</div>
+                                <div class="col-11">{{ order.deliveryStreet }} {{ order.deliverySn }},</div>
                             </div>
                             <div class="row">
                                 <div class="col-1"></div>
-                                <div class="col-11">{{ order.user.zipcode }} {{ order.user.city }}</div>
+                                <div class="col-11">{{ order.deliveryZip }} {{ order.deliveryCity }}</div>
                             </div>
                             <HR />
                             <i class="bi bi-envelope me-1"></i> {{ order.user.email }}
@@ -69,6 +69,7 @@
                 </div>
                 <div class="card-body order-info-card-body">
                     <h6 class="h6 alert alert-{{statusTheme}}" style="width: fit-content; font-weight: bold;">{{status}}</h6>
+                    <h5>Delivery address: {{ order.deliveryStreet }} {{ order.deliverySn }}, {{ order.deliveryZip }} {{ order.deliveryCity }}</h5>
                     <p class="mb-1">
                         <i class="bi bi-clock me-1"></i>Ordered: {{ order.created | format_datetime(locale: 'en') }}<BR />
                         {% if order.done %}

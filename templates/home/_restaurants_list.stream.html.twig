@@ -1,6 +1,6 @@
 <turbo-stream action="update" method="morph" target="restaurants-list">
     <template>
-        {% if status is defined and status == 200 and pager is defined and pager and pager | length > 0%}
+        {% if status is defined and status == 200 and pager is defined and pager and pager | length > 0 and zip is defined and zip %}
             {% for restaurant in pager %}
                 <div
                     class="container restaurant-card cursor-pointer"

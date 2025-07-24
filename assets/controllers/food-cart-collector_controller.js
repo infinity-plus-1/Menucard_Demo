@@ -27,6 +27,9 @@ export default class extends Controller {
         showRatingsLink: String,
         removeDishesFromCartLink: String,
         zip: String,
+        city: String,
+        street: String,
+        sn: String,
     }
 
     connect() {
@@ -77,6 +80,35 @@ export default class extends Controller {
 
         this.addDishToCart = this._addDishToCart.bind(this);
         this.closeModalFunc = this.closeModal.bind(this);
+
+        if (this.zipValue !== '' && this.cityValue !== '' && this.streetValue !== '' && this.snValue !== '') {
+            this.setAddress(this.streetValue, this.snValue, this.cityValue);
+        } else if (!sessionStorage.getItem('address')) {
+            sessionStorage.setItem('address', JSON.stringify({
+                street: '',
+                sn: '',
+                city: '',
+                zip: this.zipValue,
+            }));
+        } else {
+            const address = sessionStorage.getItem('address');
+            try {
+                const addressObj = JSON.parse(address);
+                if (
+                    addressObj.city !== ''
+                    && addressObj.street !== ''
+                    && addressObj.sn !== ''
+                    && addressObj.zip === this.zipValue
+                    && this.zipValue !== ''
+                    && addressObj.zip !== ''
+                    && this.zipValue.length === 5
+                ) {
+                    this.setAddress(addressObj.street, addressObj.sn, addressObj.city);
+                }
+            } catch (error) {
+                //ignore
+            }
+        }
     }
 
     getCart(event) {
@@ -593,9 +625,16 @@ export default class extends Controller {
                 data: { company: this.idValue },
             }).done((response) => {
                 Turbo.renderStreamMessage(response);
+                if (this.hasModalLabelTarget) {
+                    this.modalLabelTarget.innerHTML = '<h4>User ratings</h4>';
+                }
                 this.modal.show();
             }).fail((response) => {
-                console.log(response);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: `Can't show the ratings.`,
+                });
             });
         }
     }

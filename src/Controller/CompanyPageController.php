@@ -24,10 +24,14 @@ class CompanyPageController extends AbstractController
     public function index(Request $request, EntityManagerInterface $em): Response
     {
         $companyId = $request->get('id');
-        $zip = $request->get('zip');
+        $zip = $request->query->get('zip');
         $matches = [];
         $personalView = false;
         $isCompanyAccount = false;
+
+        $street = '';
+        $sn = '';
+        $city = '';
 
         $session = $request->getSession();
         
@@ -53,7 +57,15 @@ class CompanyPageController extends AbstractController
                     $personalView = true;
                 }
             }
-            $zip = $zip ?? $user->getZipcode();
+            $userZip = $user->getZipcode();
+            if ($zip !== $userZip) {
+                if (!$zip || strlen(strval($zip)) !== 5) {
+                    $zip = $userZip;
+                    $street = $user->getStreet();
+                    $sn = $user->getSn();
+                    $city = $user->getCity();
+                }
+            }
             $isCompanyAccount = Utility::isCompanyAccount($user);
         }
 
@@ -110,6 +122,9 @@ class CompanyPageController extends AbstractController
             'isCompanyAccount' => $isCompanyAccount,
             'user' => $user,
             'zip' => $zip,
+            'street' => $street,
+            'sn' => $sn,
+            'city' => $city,
             'inDeliveryRange' => Utility::isInDeliveryRange($company, $user, $zip),
         ]);
     }

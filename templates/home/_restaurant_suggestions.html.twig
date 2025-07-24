@@ -1,5 +1,5 @@
 <turbo-frame id="restaurantSuggestions">
-    {% if status is defined and status == 200 and suggestedRestaurants | length > 0 %}
+    {% if status is defined and status == 200 and suggestedRestaurants | length > 0 and zip is defined and zip %}
         <div
             id="suggestedRestaurantsSlide"
             class="carousel slide"
@@ -25,7 +25,7 @@
                     <div
                         class="cursor-pointer carousel-item {{ loop.first ? 'active' : '' }} restaurant-suggestions-carousal-item"
                         {{
-                            stimulus_controller('select-restaurant', { 'restaurant': restaurant.id }) |
+                            stimulus_controller('select-restaurant', { 'restaurant': restaurant.id, 'zip': zip }) |
                             stimulus_action('select-restaurant', 'openRestaurant', 'click')
                         }}
                     >

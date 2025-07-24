@@ -64,6 +64,8 @@ class OrderController extends AbstractController
             return ['status' => 400, 'message' => 'You can\'t place orders with commercial accounts.'];
         }
 
+        dump($address);
+
         if ($address === '') {
             $city = $user->getCity();
             $zip = $user->getZipcode();
@@ -85,7 +87,10 @@ class OrderController extends AbstractController
                     || !isset($address['sn'])
                 ) {
                     return ['status' => 400, 'message' => 'Wrong address format.'];
+                } elseif ($address['zip'] === '' || $address['city'] === '' || $address['street'] === '' || $address['sn'] === '') {
+                    return ['status' => 400, 'message' => 'Please set up a delivery address.'];
                 }
+
             } catch (\Throwable $th) {
                 $logger->error('Error: '.$th->getMessage(), ['exception' => $th]);
                 return ['status' => 400, 'message' => 'Wrong address format.'];
@@ -192,6 +197,8 @@ class OrderController extends AbstractController
                 || !isset($address['sn'])
             ) {
                 return ['status' => 400, 'message' => 'Wrong address format.'];
+            } elseif ($address['zip'] === '' || $address['city'] === '' || $address['street'] === '' || $address['sn'] === '') {
+                return ['status' => 400, 'message' => 'Please set up a delivery address.'];
             }
         } catch (\Throwable $th) {
             $logger->error('Error: '.$th->getMessage(), ['exception' => $th]);
@@ -204,7 +211,7 @@ class OrderController extends AbstractController
             return ['status' => 404, 'message' => 'The requested company could not be found.'];
         }
 
-        if (!Utility::isInDeliveryRange($company, $user)) {
+        if (!Utility::isInDeliveryRange($company, $user, $address['zip'])) {
             return ['status' => 403, 'message' => 'The restaurant does not deliver to your address.'];
         }
 
@@ -264,7 +271,7 @@ class OrderController extends AbstractController
         $address = $request->request->get('address');
 
         $data = $this->_validateDataForPersisting($id, $order, $address, $em, $logger);
-
+        dump($data);
         if ($data['status'] !== 1) {
             return isset($data['message'])
                 ? new JsonResponse($data['message'], $data['status'])
@@ -328,6 +335,9 @@ class OrderController extends AbstractController
         } else {
             $this->_client->del($uuid);
         }
+
+
+        dump($data);
 
         return $this->render('order/index.html.twig', [
             'status' => $status,

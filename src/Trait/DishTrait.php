@@ -87,7 +87,6 @@ trait DishTrait
                 }
             }
         }
-        dump($this->product);
         return true;
     }
 
