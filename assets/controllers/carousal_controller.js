@@ -11,7 +11,6 @@ export default class extends Controller {
                 interval: 2000,
                 touch: false
             });
-            console.log('TEST');
         }
         
     }

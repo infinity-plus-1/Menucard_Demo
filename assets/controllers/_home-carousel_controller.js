@@ -46,8 +46,4 @@ export default class extends Controller {
         touch: false
         });
     }
-
-    gotoProduct() {
-        console.log(this.selectedCarousalImgValue);
-    }
 }

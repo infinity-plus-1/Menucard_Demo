@@ -11,7 +11,6 @@ export default class extends Controller {
         this.observer ??= new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    console.log('IN HERE');
                     entry.target.dispatchEvent(new CustomEvent('loadMore', {detail: {entry}}));
                 }
             });

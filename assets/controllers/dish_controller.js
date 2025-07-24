@@ -43,8 +43,6 @@ export default class extends Controller {
         }).then((result) => {
             if (result.isConfirmed) {
                 const btn = $(`#delete-dish-${this.idValue}`);
-                console.log(this.idValue);
-                console.log(btn);
                 if (btn.length > 0) {
                     btn[0].click();
                     $(window).on('dish_deleted', function (response) {

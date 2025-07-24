@@ -74,7 +74,6 @@ export default class extends Controller {
                 this.updateDeliveryZipsInput();
             }
         }
-        console.log(this.selectedZips);
     }
 
     queryZips() {

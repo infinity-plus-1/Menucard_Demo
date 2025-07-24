@@ -36,10 +36,6 @@ export default class extends Controller {
         }
     }
 
-    gotoProduct() {
-        console.log(this.selectedCarousalImgValue);
-    }
-
     selectCityPostalCode(e) {
         
         const link = $('#restaurantSuggestionsLink');

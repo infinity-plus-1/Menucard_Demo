@@ -27,7 +27,6 @@ export default class extends Controller {
                 }
                 resolve('login_success');
             }).fail((response) => {
-                console.log(response);
                 reject('login_unsuccessful');
             });
         });

@@ -53,10 +53,6 @@ export default class extends Controller {
         }
     }
 
-    cancelButtonTargetConnected() {
-        //console.log('test');
-    }
-
     changeMaxRes({params}) {
         if (typeof params.mRes !== 'undefined') {
             if (this.hasLeftButtonTarget) {
@@ -98,16 +94,12 @@ export default class extends Controller {
                 this.completeButtonTarget.disabled = true;
             }
             
-            console.log(remainingTime);
             this.cancelTimer = setTimeout(() => {
                 this.cancelButtonTarget.disabled = true;
-                console.log('IN HERE');
-                console.log(this.cancelButtonTarget);
                 if (this.hasCompleteButtonTarget) {
                     this.completeButtonTarget.disabled = false;
                 }
             }, remainingTime*1000);
-            console.log(this.cancelButtonTarget);
         }
         
     }
