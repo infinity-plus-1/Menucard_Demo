@@ -6,6 +6,7 @@ use App\Entity\Company;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\OrderStatusEnum;
+use App\Utility\Utility;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -259,10 +260,10 @@ class OrderRepository extends ServiceEntityRepository
         $and = $qb->expr()->andX();
         $dateWhere = $qb->expr()->between('o.created', ':from', ':to');
         
-        if ($company && $company instanceof Company) {
+        if (Utility::isValidCompany($company)) {
             $and->add($dateWhere)->add($qb->expr()->eq('o.company', ':company'));
             $qb->setParameter('company', $company);
-        } elseif ($user && $user instanceof User) {
+        } elseif (Utility::isValidUser($user)) {
             $and->add($dateWhere)->add($qb->expr()->eq('o.user', ':user'));
             $qb->setParameter('user', $user);
         } else {

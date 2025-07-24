@@ -94,9 +94,9 @@ class DishController extends AbstractController
             $message = 'Your company has not been set up yet.';
         }
 
-        if ($user instanceof User) {
+        if (Utility::isValidUser($user)) {
             $company = $user->getCompany();
-            if ($company instanceof Company) {
+            if (Utility::isValidCompany($company)) {
                 $companyId = $company->getId();
                 if ($companyId) {
                     $dishes = $em->getRepository(Dish::class)->findBy(['company' => $companyId]);
@@ -134,13 +134,13 @@ class DishController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return 500;
         }
 
         $company = $user->getCompany();
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return 500;
         }
 
@@ -183,13 +183,13 @@ class DishController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return 500;
         }
 
         $company = $user->getCompany();
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return 500;
         }
 
@@ -287,7 +287,7 @@ class DishController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('create_product/_extras_manage_groups.stream.html.twig', [
                 'status' => 403,
                 'message' => 'You need to be logged in to perform this action.'
@@ -295,7 +295,7 @@ class DishController extends AbstractController
         }
 
         $company = $user->getCompany();
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return $this->render('create_product/_extras_manage_groups.stream.html.twig', [
                 'status' => 403,
                 'message' => 'No associated company has been found.',
@@ -344,12 +344,12 @@ class DishController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return new JsonResponse(['message' => 'You need to be logged in to perform this action.'], 403);
         }
 
         $company = $user->getCompany();
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return new JsonResponse(['message' => 'No associated company has been found.'], 403);
         }
 
@@ -375,12 +375,12 @@ class DishController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return new JsonResponse(['message' => 'You need to be logged in to perform this action.'], 403);
         }
 
         $company = $user->getCompany();
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return new JsonResponse(['message' => 'No associated company has been found.'], 403);
         }
 

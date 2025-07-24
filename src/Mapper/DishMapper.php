@@ -7,13 +7,14 @@ use App\Entity\Company;
 use App\Entity\Dish;
 use App\Entity\Extra;
 use App\Entity\ExtrasGroup;
+use App\Utility\Utility;
 
 class DishMapper
 {
     public function dishEntityToDishPersistDto(Dish $dish, array $dishOptions): ?DishPersistDto
     {
         $company = $dish->getCompany() ?? NULL;
-        if ($company instanceof Company) {
+        if (Utility::isValidCompany($company)) {
             $company = $company->getId();
         } else {
             return NULL;

@@ -7,6 +7,7 @@ use App\Entity\DeliveryZip;
 use App\Entity\Order;
 use App\Enum\CuisinesEnum;
 use App\Utility\Paths;
+use App\Utility\Utility;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -37,7 +38,7 @@ class HomeController extends AbstractController
                 foreach ($allRestaurantsDzEntities as $entity) {
                     if ($entity instanceof DeliveryZip) {
                         $company = $entity->getCompany();
-                        if ($company instanceof Company) {
+                        if (Utility::isValidCompany($company)) {
                             $allRestaurants[] = $company;
                         }
                     }

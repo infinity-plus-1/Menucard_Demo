@@ -90,7 +90,11 @@ class CompanyFormType extends AbstractType
             ])
             ->add('tax', TextType::class, [
                 'label' => 'Tax number*',
-                'required' => true
+                'required' => true,
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(min: 4),
+                ]
             ])
             ->add('logo', FileType::class, [
                 'label' => 'Upload your logo',

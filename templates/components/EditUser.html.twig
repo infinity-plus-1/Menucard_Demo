@@ -20,7 +20,7 @@
     {{ form_end(form) }}
 
     {% if status is defined and message is defined %}
-        {% if status == 200 %}
+        {% if status == 200 and message != '' %}
             <div class="alert alert-success" role="alert">
                 {{ message }}
             </div>
@@ -33,7 +33,7 @@
                 }}
                 style="display: none;"
             ></a>
-        {% else %}
+        {% elseif message != '' %}
             <div class="alert alert-danger" role="alert">
                 {{ message }}
             </div>

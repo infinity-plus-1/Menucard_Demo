@@ -51,12 +51,12 @@ class OrderController extends AbstractController
     {
         $company = $em->getRepository(Company::class)->find($id);
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return ['status' => 404, 'message' => 'No restaurant is associated with this order.'];
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return ['status' => 401, 'message' => 'You need to be logged in.'];
         }
 
@@ -164,7 +164,7 @@ class OrderController extends AbstractController
         }
         $user = $this->getUser();
 
-        if ($user && $user instanceof User) {
+        if (Utility::isValidUser($user)) {
             if ($data['user'] !== $user->getId()) {
                 return ['status' => 401, 'message' => 'Order is not assigned to user.'];
             }
@@ -205,7 +205,7 @@ class OrderController extends AbstractController
 
         $company = $em->getRepository(Company::class)->findOneBy(['id' => (int) $data['company']]);
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return ['status' => 404, 'message' => 'The requested company could not be found.'];
         }
 
@@ -290,7 +290,7 @@ class OrderController extends AbstractController
         ];
         
         $user = $this->getUser();
-        if ($user && $user instanceof User) {
+        if (Utility::isValidUser($user)) {
             $companyJson = $serializer->serialize($data['company'], 'json');
             $address = $serializer->serialize($data['address'], 'json');
             $dishesJson = $serializer->serialize($data['dishes'], 'json', $context);
@@ -384,7 +384,7 @@ class OrderController extends AbstractController
         }
 
         $company = $data['company'];
-        if (!$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return new JsonResponse('An unknown error occured, please try again.', 500);
         }
 
@@ -458,7 +458,7 @@ class OrderController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('order/confirmed.html.twig', [
                 'status' => 401,
                 'order' => NULL
@@ -491,7 +491,7 @@ class OrderController extends AbstractController
         $pagerfanta = NULL;
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('order/list.html.twig', [
                 'status' => 401,
                 'isUser' => false,
@@ -518,7 +518,7 @@ class OrderController extends AbstractController
         try {
             $pagerfanta = new Pagerfanta(
                 new QueryAdapter(
-                    $company && $company instanceof Company
+                    Utility::isValidCompany($company)
                     ? (
                         $pending
                             ? $em->getRepository(Order::class)->findByCompanyAndPending($company)
@@ -546,7 +546,7 @@ class OrderController extends AbstractController
 
         return $this->render('order/list.html.twig', [
             'status' => 200,
-            'isUser' => $company && $company instanceof Company ? false : true,
+            'isUser' => Utility::isValidCompany($company) ? false : true,
             'pending' => $pending,
             'pager' => $pagerfanta,
             'page' => $page,
@@ -652,7 +652,7 @@ class OrderController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('order/view.html.twig', [
                 'status' => 401,
                 'message' => 'You need to be logged in to view this page.',
@@ -661,9 +661,9 @@ class OrderController extends AbstractController
 
         $order = NULL;
 
-        if (in_array('ROLE_COMPANY', $user->getRoles(), true)) {
+        if (Utility::isCompanyAccount($user)) {
             $company = $user->getCompany();
-            if (!$company || !$company instanceof Company) {
+            if (!Utility::isValidCompany($company)) {
                 return new JsonResponse(['message' => "Could not find order #$id."], 404);
             }
             $order = $em->getRepository(Order::class)->findOneBy(['id' => $id, 'company' => $company]);
@@ -723,7 +723,7 @@ class OrderController extends AbstractController
         }
 
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return new JsonResponse(['message' => "You need to be logged in to $infoText an order."], 401);
         }
 
@@ -798,7 +798,7 @@ class OrderController extends AbstractController
                 $em->persist($order);
                 $em->flush();
                 $_company = $order->getCompany();
-                if ($_company && $_company instanceof Company) {
+                if (Utility::isValidCompany($_company)) {
                     $rating = $em->getRepository(Order::class)->getCompanyRating($_company);
                     if (is_array($rating) && isset($rating['totalRatings']) && isset($rating['avgRating'])) {
                         $_company->setTotalRatings($rating['totalRatings']);

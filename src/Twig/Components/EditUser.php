@@ -47,6 +47,8 @@ final class EditUser extends AbstractController
         $this->user = $this->user ?? new EditUserDto();
         $form = $this->createForm(UserFormType::class, $this->user);
         $form->get('oldPassword')->setData($this->oldPassword);
+        $this->message = '';
+        $this->status = 200;
         return $form;
     }
 
@@ -54,6 +56,8 @@ final class EditUser extends AbstractController
     public function save(ObjectMapperInterface $omi, UserPasswordHasherInterface $uphi, EntityManagerInterface $em): void
     {
         $this->errors = [];
+        $this->message = '';
+        $this->status = 200;
         $form = $this->getForm();
         $oldPassword = $this->formValues['oldPassword'] ?? '';
         $form->submit($this->formValues);

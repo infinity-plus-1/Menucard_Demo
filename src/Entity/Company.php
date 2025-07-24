@@ -79,6 +79,9 @@ class Company
     #[ORM\OneToMany(targetEntity: Extra::class, mappedBy: 'company', orphanRemoval: true)]
     private Collection $extras;
 
+    #[ORM\Column]
+    private ?bool $deleted = null;
+
     public function __construct()
     {
         $this->dishes = new ArrayCollection();
@@ -364,6 +367,18 @@ class Company
                 $extra->setCompany(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

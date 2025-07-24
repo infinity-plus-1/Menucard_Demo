@@ -10,8 +10,8 @@
                     <h4 class="h4">
                         {{
                             is_granted('ROLE_COMPANY')
-                                ? order.user.forename ~ ' ' ~ order.user.surname
-                                : order.company.name
+                                ? (order.user.deleted ? 'Deleted user' : order.user.forename ~ ' ' ~ order.user.surname)
+                                : (order.company.deleted ? 'Deleted company' : order.company.name)
                         }}
                     </h4>
                     <p class="mb-1">
@@ -36,13 +36,15 @@
                                 <div class="col-11">{{ order.company.zip }} {{ order.company.city }}</div>
                             </div>
                             <HR />
-                            {% if order.company.email %}
+                            {% if not order.company.deleted and order.company.email %}
                                 <i class="bi bi-envelope me-1"></i> {{ order.company.email }}<br>
                             {% endif %}
-                            {% if order.company.website %}
+                            {% if not order.company.deleted and order.company.website %}
                                 <i class="bi bi-envelope me-1"></i> {{ order.company.website }}<br>
                             {% endif %}
-                            <i class="bi bi-envelope me-1"></i> {{ order.company.phone }}
+                            {% if not order.company.deleted %}
+                                <i class="bi bi-envelope me-1"></i> {{ order.company.phone }}
+                            {% endif %}
                         {% endif %}
                     </p>
                 </div>

@@ -6,6 +6,7 @@ use App\Entity\Company;
 use App\Entity\Dish;
 use App\Entity\User;
 use App\Repository\DishRepository;
+use App\Utility\Utility;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -27,9 +28,9 @@ final class DishFilter extends AbstractController
     {
         $user = $this->getUser();
 
-        if ($user instanceof User) {
+        if (Utility::isValidUser($user)) {
             $company = $user->getCompany();
-            if ($company instanceof Company) {
+            if (Utility::isValidCompany($company)) {
                 $companyId = $company->getId();
                 if ($companyId) {
                     $repository = $this->em->getRepository(Dish::class);

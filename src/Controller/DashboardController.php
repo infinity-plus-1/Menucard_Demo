@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Company;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Utility\Utility;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -22,14 +23,14 @@ class DashboardController extends AbstractController
     public function index(): Response
     {
         $user = $this->getUser();
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('dashboard/index.html.twig', [], new Response('You are not eligible to view this page.', 401));
         }
         $company = $user->getCompany();
 
         $companyId = -1;
 
-        if ($company && $company instanceof Company) {
+        if (Utility::isValidCompany($company)) {
             $companyId = $company->getId();
         }
 
@@ -91,19 +92,16 @@ class DashboardController extends AbstractController
         $lastMonths = $this->_getLastMonths();
         $months = array_map(fn($month) => explode(' ', $month)[0], $lastMonths);
 
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('dashboard/chart.html.twig', [
                 'chart' => null,
             ]);
         }
 
-        $roles = $user->getRoles();
-        $isCompany = array_search('ROLE_COMPANY', $roles, true) !== false;
-
         $company = $user->getCompany();
 
         //Company account has not set up company information yet, so no orders should be available
-        if ($isCompany && (!$company || !$company instanceof Company)) {
+        if (Utility::isCompanyAccount($user) && !Utility::isValidCompany($company)) {
             $chart = $this->_setChart($chartBuilder, $months);
             return $this->render('dashboard/chart.html.twig', [
                 'chart' => $chart,

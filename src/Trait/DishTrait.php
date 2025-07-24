@@ -121,7 +121,7 @@ trait DishTrait
            
             if ($user instanceof User) {
                 $company = $user->getCompany();
-                if (!$company || !$company instanceof Company) {
+                if (!Utility::isValidCompany($company)) {
                     $this->message = "Your company information have not been set yet. Please click in the navigation list of your" .
                         " dashboard on 'Company' and enter all needed information there first.";
                     $this->status = Utility::ERROR;
@@ -250,7 +250,7 @@ trait DishTrait
             }
 
             $company = $user->getCompany();
-            if (!$company instanceof Company || $dish->getCompany() !== $company) {
+            if (!Utility::isValidCompany($company) || $dish->getCompany() !== $company) {
                 $this->status = Utility::ERROR;
                 $this->message = "Response: 403 - Forbidden";
                 $this->emit('dish_updated');
@@ -301,12 +301,12 @@ trait DishTrait
         $user = $this->getUser();
         if ($user instanceof User) {
             $company = $user->getCompany();
-            if ($company instanceof Company) {
+            if (Utility::isValidCompany($company)) {
                 $companyId = $company->getId();
                 $dishObj = $em->getRepository(Dish::class)->find($id);
                 if ($dishObj instanceof Dish) {
                     $company = $dishObj->getCompany();
-                    if ($company instanceof Company) {
+                    if (Utility::isValidCompany($company)) {
                         $companyVarifyId = $company->getId();
                         if (is_int($companyId) && is_int($companyVarifyId) && $companyId === $companyVarifyId) {
                             return $dishObj;

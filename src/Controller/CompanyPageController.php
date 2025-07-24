@@ -45,14 +45,14 @@ class CompanyPageController extends AbstractController
 
         $company = $em->getRepository(Company::class)->find($companyId);
 
-        if (!$company) {
+        if (!Utility::isValidCompany($company)) {
             return $this->render('bundles/TwigBundle/Exception/error404.html.twig', []);
         }
 
         $user = $this->getUser();
-        if ($user && $user instanceof User) {
+        if (Utility::isValidUser($user)) {
             $userCompany = $user->getCompany();
-            if ($userCompany && $userCompany instanceof Company) {
+            if (Utility::isValidCompany($userCompany)) {
                 if ($company === $userCompany) {
                     $personalView = true;
                 }
@@ -141,7 +141,7 @@ class CompanyPageController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('company_page/_add_dish.stream.html.twig', [
                 'status' => 500,
                 'message' => 'You need to be logged in to perform this action.'
@@ -156,7 +156,7 @@ class CompanyPageController extends AbstractController
 
         $company = $session->get('currentVisitedCompany');
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return $this->render('company_page/_add_dish.stream.html.twig', [
                 'status' => 400,
             ]);
@@ -194,7 +194,7 @@ class CompanyPageController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user || !$user instanceof User) {
+        if (!Utility::isValidUser($user)) {
             return $this->render('company_page/_add_dish.stream.html.twig', [
                 'status' => 500,
                 'message' => 'You need to be logged in to perform this action.'
@@ -209,7 +209,7 @@ class CompanyPageController extends AbstractController
 
         $company = $session->get('currentVisitedCompany');
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return $this->render('company_page/_add_dish.stream.html.twig', [
                 'status' => 400,
             ]);
@@ -279,7 +279,7 @@ class CompanyPageController extends AbstractController
 
         $company = $em->getRepository(Company::class)->find($company);
 
-        if (!$company || !$company instanceof Company) {
+        if (!Utility::isValidCompany($company)) {
             return $this->render('company_page/_show_ratings.stream.html.twig', [
                 'company' => NULL,
                 'status' => 404,

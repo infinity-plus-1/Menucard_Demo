@@ -40,13 +40,17 @@ export default class extends Controller {
                                 method: 'POST',
                                 url: '/delete_user',
                                 data: {userAccepted: true, token_delete: token, oldPassword: oldPassword}
-                            }).done((test, test1, test2) => {
+                            }).done(() => {
                                 alert.fire({
-                                    title: "Error",
-                                    text: errorMsg,
-                                    icon: "error"
+                                    title: "Account deleted",
+                                    text: 'You\'ll get redirected soon.',
+                                    icon: "info",
+                                    showConfirmButton: false,
+                                    allowOutsideClick: false,
                                 });
-
+                                setTimeout(() => {
+                                    Turbo.visit('/');
+                                }, 3000);
                             }).fail((response) => {
                                 const errorMsg = getJsonResponseMessage(response);
                                 alert.fire({

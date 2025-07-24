@@ -7,7 +7,7 @@
         <div id="ratings-page-{{ page }}" data-live-ignore="true">
                 {% for order in this.orders %}
                     <div style="height: 100%;">
-                        <h5>{{ order.user.forename }} {{ order.user.surname [:1] }}.</h5>
+                        <h5>{{ order.user.deleted ? 'Deleted user' : order.user.forename }} {{ order.user.deleted ? '' : order.user.surname [:1] }}.</h5>
                         <div>
                             {% set totalRating = order.rating %}
                             {% for i in 1..totalRating %}

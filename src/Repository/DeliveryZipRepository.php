@@ -67,7 +67,11 @@ class DeliveryZipRepository extends ServiceEntityRepository
             ->andWhere(
                 $qb->expr()->eq('d.zipCode', ':zip')
             )
-            ->setParameter('zip', $zip);
+            ->andWhere(
+                $qb->expr()->eq('c.deleted', ':deleted')
+            )
+            ->setParameter('zip', $zip)
+            ->setParameter('deleted', false);
         return $returnArray ? $qb->getQuery()->getResult() : $qb;
     }
 

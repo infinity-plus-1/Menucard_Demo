@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use App\Form\RegistrationType;
+use App\Utility\Utility;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Test\FormInterface;
@@ -38,9 +39,12 @@ class RegistrationController extends AbstractController
             ]);
         }
         else if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $user = $form->getData();
+            if (Utility::isValidUser($user)) {
+                $user->setDeleted(false);
+            }
 
-            $em->persist($data);
+            $em->persist($user);
             $em->flush();
 
             return $this->render('registration/reg_success.html.twig', []);

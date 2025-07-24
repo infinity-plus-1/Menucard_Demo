@@ -50,7 +50,7 @@ final class CompanyForm extends AbstractController
         $this->status = $this::OPEN;
         $this->message = '';
         $user = $this->getUser();
-        if ($this->data === NULL && $user instanceof User) {
+        if ($this->data === NULL && Utility::isValidUser($user)) {
             $this->data = $user->getCompany() ?? new Company();
         }
         return $this->createForm(CompanyFormType::class, $this->data);
@@ -118,8 +118,9 @@ final class CompanyForm extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($user instanceof User) {
+            if (Utility::isValidUser($user)) {
                 if ($this->data->getId() === NULL) {
+                    $this->data->setDeleted(false);
                     $em->persist($this->data);
                 }
                 $user->setCompany($this->data);

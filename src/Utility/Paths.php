@@ -37,7 +37,7 @@ final class Paths
             ? $this->entityManager->getRepository(Company::class)->find($company)
             : $this->entityManager->getRepository(Company::class)->findOneBy(['name' => $company])
         ;
-        if ($company !== NULL && $company instanceof Company) {
+        if (Utility::isValidCompany($company)) {
             return hash('sha256', $company->getName());
         } elseif (is_string($company) && $company !== '') {
             return hash('sha256', $company);

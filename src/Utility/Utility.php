@@ -4,6 +4,7 @@ namespace App\Utility;
 
 use App\Entity\Company;
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 
 final class Utility
@@ -64,5 +65,55 @@ final class Utility
     {
         $company = $user->getCompany();
         return !self::isCompanyAccount($user) || (self::isCompanyAccount($user) && $company && $company instanceof Company);
+    }
+
+    /** 
+     * If the deleted user is associated with a company, the company will be deleted as well
+     * @param User $user The user entity
+     * 
+     */
+    public static function deleteCompany(User $user, EntityManagerInterface $em): void
+    {
+        $company = $user->getCompany();
+
+        if ($company instanceof Company) {
+            $company->setName('deleted');
+            $company->setZip('deleted');
+            $company->setCity('deleted');
+            $company->setStreet('deleted');
+            $company->setSn('deleted');
+            $company->setPhone('deleted');
+            $company->setEmail('');
+            $company->setWebsite('');
+            $company->setTax('deleted');
+            $company->setLogo('');
+            $company->setDeleted(true);
+            $em->persist($company);
+            $em->flush();
+        }
+    }
+
+    /**
+     * Proof that the given parameter is a valid, non-deleted Company-Entity
+     * 
+     * @param mixed $company The variable to proof
+     * 
+     * @return bool True if the variable is valid
+     */
+    public static function isValidCompany(mixed $company): bool
+    {
+        return $company && $company instanceof Company && !$company->isDeleted();
+    }
+
+    /**
+     * Proof that the given parameter is a valid, non-deleted User-Entity
+     * 
+     * @param mixed $user The variable to proof
+     * 
+     * @return bool True if the variable is valid
+     */
+    public static function isValidUser(mixed $user): bool
+    {
+        return $user && $user instanceof User && !$user->isDeleted();
     }
 }

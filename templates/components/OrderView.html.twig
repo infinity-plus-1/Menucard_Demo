@@ -55,9 +55,9 @@
                                 <HR />
                                 <div>
                                     {% if isUser %}
-                                        <p>{{ order.company.name }}</p>
+                                        <p>{{ order.company.deleted ? 'Deleted restaurant' : order.company.name }}</p>
                                     {% else %}
-                                        <p>{{ order.user.forename }} {{ order.user.surname }}</p>
+                                        <p>{{ order.user.deleted ? 'Deleted user' : order.user.forename }} {{ order.user.deleted ? '' : order.user.surname }}</p>
                                     {% endif %}
                                 </div>
                                 
