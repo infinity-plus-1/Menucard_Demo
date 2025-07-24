@@ -72,6 +72,31 @@ export default class extends Controller {
         }
     }
 
+    /** Obverse extra suggestions */
+
+    extraNamesSuggestionTargetConnected() {
+        this.extraSuggestionsObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.type === 'subtree' || mutation.type === 'childList') {
+                    if ($(this.extraNamesSuggestionTarget).children().length > 0) {
+                        $(this.extraNamesSuggestionTarget).removeClass('d-none');
+                    } else {
+                        $(this.extraNamesSuggestionTarget).addClass('d-none');
+                    }
+                }
+            }
+        });
+        this.extraSuggestionsObserver.observe(this.extraNamesSuggestionTarget, { subtree: true, childList: true });
+    }
+
+    extraNamesSuggestionTargetDisconnected() {
+        if (this.extraSuggestionsObserver) {
+            this.extraSuggestionsObserver.disconnect();
+        }
+    }
+
+    /** Close modal */
+
     closeModal() {
         if (this.modal) {
             const modal = $('#dish-modal');
@@ -494,9 +519,6 @@ export default class extends Controller {
             }
             if (this.hasExtraNameInputTarget) {
                 this.extraNameInputTarget.value = this.extraName;
-            }
-            if (this.hasExtraNamesSuggestionTarget) {
-                $(this.extraNamesSuggestionTarget).addClass('d-none');
             }
         }
     }

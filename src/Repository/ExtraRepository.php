@@ -16,6 +16,17 @@ class ExtraRepository extends ServiceEntityRepository
         parent::__construct($registry, Extra::class);
     }
 
+    public function getExtrasByName(string $name): array
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        return $qb
+            ->andWhere('e.name LIKE :name')
+            ->setParameter('name', '%'.$name.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Extras[] Returns an array of Extras objects
 //     */

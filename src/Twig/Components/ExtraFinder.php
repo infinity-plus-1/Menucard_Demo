@@ -13,16 +13,31 @@ final class ExtraFinder
 {
     use DefaultActionTrait;
 
-    #[LiveProp(writable: true)]
+    #[LiveProp(writable: true, onUpdated: 'updatedExtraName')]
     public string $extraName = '';
 
-    #[LiveProp]
+    #[LiveProp(dehydrateWith: 'dehydrateExtras')]
     public array $extras = [];
 
     public function __construct(private EntityManagerInterface $em) {}
 
-    public function getExtraNames(): void
+    public function dehydrateExtras(array $extras): array
     {
-        $this->extras = $this->em->getRepository(Extra::class)->findBy(['name' => $this->extraName]);
+        dump($extras);
+        return array_map(fn(Extra $extra) => [
+            'name' => $extra->getName(),
+        ], $extras);
     }
+
+    public function updatedExtraName(): void
+    {
+        if ($this->extraName === '') {
+            $this->extras = [];
+            return;
+        }
+
+        $this->extras = $this->em->getRepository(Extra::class)->getExtrasByName($this->extraName);
+    }
+
+    
 }
