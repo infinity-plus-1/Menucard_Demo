@@ -103,7 +103,6 @@ class DishController extends AbstractController
                 }
             }
         }
-        dump($dishes);
         return $this->render('dish/list.html.twig', [
             'dishes' => $dishes,
             'status' => $status,

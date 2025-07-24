@@ -78,11 +78,9 @@ class JsonGroupToGroupEntityTransformer implements DataTransformerInterface
             $extrasTransformer = new JsonExtraToExtraEntityTransformer($this->em, $this->company, $this->dish, 2);
 
         } catch (\Throwable $th) {
-            dump($th);
             return new ArrayCollection([]);
         }
 
-        dump($groupsArray);
         if (is_array($groupsArray) && $groupsArray !== []) {
             if (isset($groupsArray['singleExtras'])) {
                 $groupsArray = $groupsArray['singleExtras'];

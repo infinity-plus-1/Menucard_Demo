@@ -129,7 +129,6 @@ trait ExtrasTrait
             }
             $this->status = Utility::ERROR;
             $this->message = 'Unexpected error occured while trying to save to the database.';
-            dump($th);
             $logger->error('Error: '.$th->getMessage(), ['exception' => $th]);
             return false;
         }

@@ -64,8 +64,6 @@ class OrderController extends AbstractController
             return ['status' => 400, 'message' => 'You can\'t place orders with commercial accounts.'];
         }
 
-        dump($address);
-
         if ($address === '') {
             $city = $user->getCity();
             $zip = $user->getZipcode();
@@ -271,7 +269,7 @@ class OrderController extends AbstractController
         $address = $request->request->get('address');
 
         $data = $this->_validateDataForPersisting($id, $order, $address, $em, $logger);
-        dump($data);
+
         if ($data['status'] !== 1) {
             return isset($data['message'])
                 ? new JsonResponse($data['message'], $data['status'])
@@ -335,9 +333,6 @@ class OrderController extends AbstractController
         } else {
             $this->_client->del($uuid);
         }
-
-
-        dump($data);
 
         return $this->render('order/index.html.twig', [
             'status' => $status,

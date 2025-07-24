@@ -22,7 +22,6 @@ class LogoutController extends AbstractController
     ): Response {
         $tokenStorage->setToken(NULL);
         $session->invalidate();
-        dump("IN HERE");
         return new JsonResponse (
             [
                 'message' => 'Logged out successfully',
