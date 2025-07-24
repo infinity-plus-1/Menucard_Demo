@@ -229,7 +229,7 @@ export default class extends Controller {
         if (address) {
             try {
                 const addressObj = JSON.parse(address);
-                console.log(addressObj);
+
                 if (typeof addressObj.zip !== 'undefined' && this.zipValue === addressObj.zip) {
                     if (
                         addressObj.city !== ''
@@ -238,7 +238,6 @@ export default class extends Controller {
                         && this.zipValue !== ''
                         && this.zipValue.length === 5
                     ) {
-                        console.log(addressObj);
                         this.setAddress(addressObj.street, addressObj.sn, addressObj.city);
                     } else {
                         _shouldUseAccAddress();
