@@ -27,6 +27,7 @@ export default class extends Controller {
         showRatingsLink: String,
         removeDishesFromCartLink: String,
         zip: String,
+        userZip: String,
         city: String,
         street: String,
         sn: String,
@@ -81,34 +82,7 @@ export default class extends Controller {
         this.addDishToCart = this._addDishToCart.bind(this);
         this.closeModalFunc = this.closeModal.bind(this);
 
-        if (this.zipValue !== '' && this.cityValue !== '' && this.streetValue !== '' && this.snValue !== '') {
-            this.setAddress(this.streetValue, this.snValue, this.cityValue);
-        } else if (!sessionStorage.getItem('address')) {
-            sessionStorage.setItem('address', JSON.stringify({
-                street: '',
-                sn: '',
-                city: '',
-                zip: this.zipValue,
-            }));
-        } else {
-            const address = sessionStorage.getItem('address');
-            try {
-                const addressObj = JSON.parse(address);
-                if (
-                    addressObj.city !== ''
-                    && addressObj.street !== ''
-                    && addressObj.sn !== ''
-                    && addressObj.zip === this.zipValue
-                    && this.zipValue !== ''
-                    && addressObj.zip !== ''
-                    && this.zipValue.length === 5
-                ) {
-                    this.setAddress(addressObj.street, addressObj.sn, addressObj.city);
-                }
-            } catch (error) {
-                //ignore
-            }
-        }
+        this.initialAddressHandler();
     }
 
     getCart(event) {
@@ -236,6 +210,50 @@ export default class extends Controller {
         }
     }
 
+    initialAddressHandler() {
+        const address = sessionStorage.getItem('address');
+        
+        const _shouldUseAccAddress = () => {
+            if (
+                this.zipValue === this.userZipValue
+                && this.streetValue !== ''
+                && this.snValue !== ''
+                && this.cityValue !== ''
+            ) {
+                this.setAddress(this.streetValue, this.snValue, this.cityValue);
+            } else {
+                this.setAddress('', '', '');
+            }
+        }
+
+        if (address) {
+            try {
+                const addressObj = JSON.parse(address);
+                console.log(addressObj);
+                if (typeof addressObj.zip !== 'undefined' && this.zipValue === addressObj.zip) {
+                    if (
+                        addressObj.city !== ''
+                        && addressObj.street !== ''
+                        && addressObj.sn !== ''
+                        && this.zipValue !== ''
+                        && this.zipValue.length === 5
+                    ) {
+                        console.log(addressObj);
+                        this.setAddress(addressObj.street, addressObj.sn, addressObj.city);
+                    } else {
+                        _shouldUseAccAddress();
+                    }
+                } else {
+                    _shouldUseAccAddress();
+                }
+            } catch (error) {
+                _shouldUseAccAddress();
+            }
+        } else {
+            _shouldUseAccAddress();
+        }
+    }
+
     async prepareAddressSet(deliveryStreet, deliverySn, deliveryCity) {
         deliveryStreet.removeClass('red-border');
         deliverySn.removeClass('red-border');
@@ -262,7 +280,7 @@ export default class extends Controller {
             && this.hasDeliveryCityTarget
         ) {
             $(this.deliveryStreetTarget).text(`${deliveryStreet} `);
-            $(this.deliverySnTarget).text(`${deliverySn}, `);
+            $(this.deliverySnTarget).text(deliverySn ? `${deliverySn}, ` : '');
             $(this.deliveryZipTarget).text(`${this.zipValue} `);
             $(this.deliveryCityTarget).text(`${deliveryCity}`);
             sessionStorage.setItem('address', JSON.stringify({

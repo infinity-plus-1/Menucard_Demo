@@ -50,6 +50,7 @@ class CompanyPageController extends AbstractController
         }
 
         $user = $this->getUser();
+        $userZip = '00000';
         if (Utility::isValidUser($user)) {
             $userCompany = $user->getCompany();
             if (Utility::isValidCompany($userCompany)) {
@@ -58,14 +59,17 @@ class CompanyPageController extends AbstractController
                 }
             }
             $userZip = $user->getZipcode();
-            if ($zip !== $userZip) {
-                if (!$zip || strlen(strval($zip)) !== 5) {
-                    $zip = $userZip;
-                    $street = $user->getStreet();
-                    $sn = $user->getSn();
-                    $city = $user->getCity();
-                }
-            }
+            $street = $user->getStreet();
+            $sn = $user->getSn();
+            $city = $user->getCity();
+            // dump($zip);
+            // dump($userZip);
+            // if ($zip === $userZip) {
+            //     if (!$zip || strlen(strval($zip)) !== 5) {
+            //         $zip = $userZip;
+            //         
+            //     }
+            // }
             $isCompanyAccount = Utility::isCompanyAccount($user);
         }
 
@@ -122,6 +126,7 @@ class CompanyPageController extends AbstractController
             'isCompanyAccount' => $isCompanyAccount,
             'user' => $user,
             'zip' => $zip,
+            'userZip' => $userZip,
             'street' => $street,
             'sn' => $sn,
             'city' => $city,

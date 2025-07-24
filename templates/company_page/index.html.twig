@@ -19,6 +19,7 @@
                 'removeDishesFromCartLink': path('_removeDishesFromCart'),
                 'showRatingsLink': path('showRatings'),
                 'zip': zip,
+                'userZip': userZip,
                 'city': city,
                 'street': street,
                 'sn': sn,
@@ -132,11 +133,11 @@
             <div class="row mt-4 align-items-center">
                 <div class="col-8 text-center">
                     <span class="fw-bold">Delivery Address: </span>
-                    <span {{ stimulus_target('food-cart-collector', 'deliveryStreet') }}>{{ street }} </span>
-                    <span {{ stimulus_target('food-cart-collector', 'deliverySn') }}>{{ sn }}{{ street != '' and sn != '' ? ',' : ''}} </span>
+                    <span {{ stimulus_target('food-cart-collector', 'deliveryStreet') }}></span>
+                    <span {{ stimulus_target('food-cart-collector', 'deliverySn') }}></span>
                     <p>
-                        <span {{ stimulus_target('food-cart-collector', 'deliveryZip') }}>{{ zip }} </span>
-                        <span {{ stimulus_target('food-cart-collector', 'deliveryCity') }}>{{ city }}</span>
+                        <span {{ stimulus_target('food-cart-collector', 'deliveryZip') }}></span>
+                        <span {{ stimulus_target('food-cart-collector', 'deliveryCity') }}></span>
                     </p>
                 </div>
                 <div class="col text-start">
