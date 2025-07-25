@@ -85,29 +85,38 @@ class JsonGroupToGroupEntityTransformer implements DataTransformerInterface
             if (isset($groupsArray['singleExtras'])) {
                 $groupsArray = $groupsArray['singleExtras'];
             }
+
+            $groupEntities = $this->em->getRepository(ExtrasGroup::class)->findBy(
+                [
+                    'company' => $this->company,
+                    'dish' => $this->dish,
+                ]
+            );
+
+            $groupEntitiesById = [];
+
+            foreach ($groupEntities as $entity) {
+                $groupEntitiesById[$entity->getId()] = $entity;
+            }
             
             foreach ($groupsArray as $group) {
                 if (!isset($group['group']) || !isset($group['group']['name']) || !isset($group['extras'])) {
                     continue;
                 }
                 if (is_array($group) && $group !== []) {
-                    $groupEntity =
-                        $this->em->getRepository(ExtrasGroup::class)->findOneBy(
-                            [
-                                'id' => $group['group']['identifier'] ?? 0,
-                                'name' => $group['group']['name'],
-                                'company' => $this->company,
-                                'dish' => $this->dish,
-                            ]
-                        )
-                        ?? new ExtrasGroup();
+
+                    if (!isset($groupEntitiesById[$group['group']['identifier']])) {
+                        $groupEntity = new ExtrasGroup();
+                    } else {
+                        $groupEntity = $groupEntitiesById[$group['group']['identifier']];
+                    }
+
                     $name = $group['group']['name'];
                     $extras = $group['extras'];
                     $groupEntity->setName($name);
 
                     $extraEntities = $extrasTransformer->reverseTransform($extras);
-                    
-                    //$groupEntity->setExtras($extraEntities);
+
                     array_map(function($extra) use (&$groupEntity) { $groupEntity->addExtra($extra); }, $extraEntities->toArray());
 
                     $groupEntity->setCompany($this->company);

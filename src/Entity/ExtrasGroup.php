@@ -29,7 +29,7 @@ class ExtrasGroup
     /**
      * @var Collection<int, Extras>
      */
-    #[ORM\OneToMany(targetEntity: Extra::class, mappedBy: 'extrasGroup', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Extra::class, mappedBy: 'extrasGroup', orphanRemoval: true, cascade: ['persist'])]
     private Collection $extras;
 
     public function __construct()

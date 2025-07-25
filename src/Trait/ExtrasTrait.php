@@ -96,6 +96,7 @@ trait ExtrasTrait
         try {
             $em->flush();
         } catch (\Throwable $th) {
+            dump($th);
             if ($em->getConnection()->isTransactionActive()) {
                 $em->rollback();
             }

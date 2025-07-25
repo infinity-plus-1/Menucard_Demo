@@ -229,16 +229,26 @@ class DishController extends AbstractController
                     if (!isset($decodedGroup['extras'])) {
                         return 500;
                     }
-                    if (!isset($groups[$decodedGroup['group']['name']])) {
-                        $groupEntity = new ExtrasGroup();
-                        $groupEntity->setName($decodedGroup['group']['name']);
-    
-                        $extras = $extrasTransformer->reverseTransform($decodedGroup['extras']);
-                        foreach ($extras as $extra) {
-                            $groupEntity->addExtra($extra);
+
+                    if ($decodedGroup['group']['identifier'] == 0) {
+                        if (!isset($groups[$decodedGroup['group']['name']])) {
+                            $groupEntity = new ExtrasGroup();
+                            $groupEntity->setName($decodedGroup['group']['name']);
+        
+                            $extras = $extrasTransformer->reverseTransform($decodedGroup['extras']);
+                            foreach ($extras as $extra) {
+                                $groupEntity->addExtra($extra);
+                            }
+                            $groups[] = $groupEntity;
                         }
-                        $groups[] = $groupEntity;
+                    } else {
+                        foreach ($groups as $group) {
+                            if ($group instanceof ExtrasGroup && $group->getId() == $decodedGroup['group']['identifier']) {
+                                $group->setName($decodedGroup['group']['name']);
+                            }
+                        }
                     }
+                    
                 }
             } catch (\Throwable $th) {
                 return 500;
@@ -316,6 +326,7 @@ class DishController extends AbstractController
             }
             $groups = $result['groups'];
             $dish = $result['dish'] ?? NULL;
+            dump($groups);
             return $this->render('create_product/_extras_manage_groups.stream.html.twig', [
                 'groups' => $groups,
                 'dish' => $dish,

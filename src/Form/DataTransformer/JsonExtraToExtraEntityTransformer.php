@@ -61,19 +61,29 @@ class JsonExtraToExtraEntityTransformer implements DataTransformerInterface
         $extrasEntityArray = [];
 
         if (is_array($extrasArray) && $extrasArray !== []) {
+            $extraEntities = $this->em->getRepository(Extra::class)->findBy(
+                [
+                    'company' => $this->company,
+                    'dish' => $this->dish,
+                    'selectType' => $this->type,
+                ]
+            );
+
+            $extraEntitiesById = [];
+
+            foreach ($extraEntities as $entity) {
+                $extraEntitiesById[$entity->getId()] = $entity;
+            }
+
             foreach ($extrasArray as $extra) {
                 if (is_array($extra) && $extra !== []) {
-                    $extraEntity =
-                        $this->em->getRepository(Extra::class)->findOneBy(
-                            [
-                                'id' => $extra['identifier'],
-                                'name' => $extra['name'],
-                                'company' => $this->company,
-                                'dish' => $this->dish,
-                                'selectType' => $this->type,
-                            ]
-                        )
-                        ?? new Extra();
+                    $extraEntity = NULL;
+                    if (!isset($extraEntitiesById[$extra['identifier']])) {
+                        $extraEntity = new Extra();
+                    } else {
+                        $extraEntity = $extraEntitiesById[$extra['identifier']];
+
+                    }
 
                     $extraEntity->setName($extra['name']);
                     $extraEntity->setPrice($extra['price']);

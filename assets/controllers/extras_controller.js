@@ -643,14 +643,14 @@ export default class extends Controller {
                 this._createExtraElement(extra, this.extrasMultiContainerTarget, true);
             }
         } else {
-            const container = $(`#extras-single-group-${group}`);
-
+            const cleanedGroupName = group.replace(' ', '');
+            const container = $(`#extras-single-group-${cleanedGroupName}`);
             if (container.length === 1) {
                 this._createExtraElement(extra, container.get(0), false, group);
             } else {
                 if (this.hasExtrasSingleContainerTarget) {
                     const div = document.createElement('DIV');
-                    div.id = `extras-single-group-${group}`;
+                    div.id = `extras-single-group-${cleanedGroupName}`;
                     $(div).addClass('mb-3');
                     const header = document.createElement('H5');
                     header.innerText = group;
