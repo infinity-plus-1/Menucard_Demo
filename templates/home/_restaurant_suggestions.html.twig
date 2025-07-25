@@ -29,7 +29,7 @@
                             stimulus_action('select-restaurant', 'openRestaurant', 'click')
                         }}
                     >
-                        <img src="{{restaurant.logo ? '/' ~ restaurant.logo : asset('images/restaurant.svg') }}" class="r-s-carousel-img d-block w-100" alt="{{ restaurant.name }}" loading="eager">
+                        <img src="{{restaurant.logo ? '/' ~ restaurant.logo : asset('images/restaurant.svg') }}?v={{ random() }}" class="r-s-carousel-img d-block w-100" alt="{{ restaurant.name }}" loading="eager">
                         <div class="r-s-restaurant-information carousel-caption d-md-block">
                             <h1 class="user-select-none">{{ restaurant.name }}</h1>
                             <BR />

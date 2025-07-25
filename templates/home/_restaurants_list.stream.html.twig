@@ -12,7 +12,7 @@
                     }}
                 >
                     <div style="width: 300px;">
-                        <img src="{{restaurant.company.logo ? '/' ~ restaurant.company.logo : asset('images/restaurant.svg') }}" />
+                        <img src="{{restaurant.company.logo ? '/' ~ restaurant.company.logo : asset('images/restaurant.svg') }}?v={{ random() }}" />
                     </div>
                     <div class="restaurant-card-information">
                         <h5>{{restaurant.company.name}}</h5>
