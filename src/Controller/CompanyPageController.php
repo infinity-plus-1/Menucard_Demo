@@ -62,14 +62,7 @@ class CompanyPageController extends AbstractController
             $street = $user->getStreet();
             $sn = $user->getSn();
             $city = $user->getCity();
-            // dump($zip);
-            // dump($userZip);
-            // if ($zip === $userZip) {
-            //     if (!$zip || strlen(strval($zip)) !== 5) {
-            //         $zip = $userZip;
-            //         
-            //     }
-            // }
+            
             $isCompanyAccount = Utility::isCompanyAccount($user);
         }
 

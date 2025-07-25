@@ -23,7 +23,6 @@ final class ExtraFinder
 
     public function dehydrateExtras(array $extras): array
     {
-        dump($extras);
         return array_map(fn(Extra $extra) => [
             'name' => $extra->getName(),
         ], $extras);

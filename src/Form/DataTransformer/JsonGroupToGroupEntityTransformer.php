@@ -105,7 +105,7 @@ class JsonGroupToGroupEntityTransformer implements DataTransformerInterface
                 }
                 if (is_array($group) && $group !== []) {
 
-                    if (!isset($groupEntitiesById[$group['group']['identifier']])) {
+                    if (!isset($group['group']['identifier']) || !isset($groupEntitiesById[$group['group']['identifier']])) {
                         $groupEntity = new ExtrasGroup();
                     } else {
                         $groupEntity = $groupEntitiesById[$group['group']['identifier']];

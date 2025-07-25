@@ -184,7 +184,7 @@ class DishController extends AbstractController
         $user = $this->getUser();
 
         if (!Utility::isValidUser($user)) {
-            return 500;
+            return 504;
         }
 
         $company = $user->getCompany();
@@ -230,7 +230,7 @@ class DishController extends AbstractController
                         return 500;
                     }
 
-                    if ($decodedGroup['group']['identifier'] == 0) {
+                    if (!isset($decodedGroup['group']['identifier']) || $decodedGroup['group']['identifier'] == 0) {
                         if (!isset($groups[$decodedGroup['group']['name']])) {
                             $groupEntity = new ExtrasGroup();
                             $groupEntity->setName($decodedGroup['group']['name']);
@@ -326,7 +326,7 @@ class DishController extends AbstractController
             }
             $groups = $result['groups'];
             $dish = $result['dish'] ?? NULL;
-            dump($groups);
+            
             return $this->render('create_product/_extras_manage_groups.stream.html.twig', [
                 'groups' => $groups,
                 'dish' => $dish,
