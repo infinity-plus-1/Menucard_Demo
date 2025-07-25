@@ -37,7 +37,6 @@ export default class extends Controller {
     }
 
     selectCityPostalCode(e) {
-        
         const link = $('#restaurantSuggestionsLink');
         const turboFrame = $('#restaurantSuggestions');
         if (link.length === 1 && turboFrame.length === 1) {
