@@ -16,17 +16,10 @@ final class ExtraFinder
     #[LiveProp(writable: true, onUpdated: 'updatedExtraName')]
     public string $extraName = '';
 
-    #[LiveProp(dehydrateWith: 'dehydrateExtras')]
+    #[LiveProp]
     public array $extras = [];
 
     public function __construct(private EntityManagerInterface $em) {}
-
-    public function dehydrateExtras(array $extras): array
-    {
-        return array_map(fn(Extra $extra) => [
-            'name' => $extra->getName(),
-        ], $extras);
-    }
 
     public function updatedExtraName(): void
     {

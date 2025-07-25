@@ -21,10 +21,11 @@ class ExtraRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         return $qb
+            ->select('DISTINCT e.name')
             ->andWhere('e.name LIKE :name')
             ->setParameter('name', '%'.$name.'%')
             ->getQuery()
-            ->getResult();
+            ->getScalarResult();
     }
 
 //    /**
