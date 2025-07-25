@@ -1,0 +1,162 @@
+<turbo-frame id="order-frame">
+    {% if is_granted('ROLE_USER') %}
+        <div class="container mt-4">
+            {# Restaurant or customer info #}
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">{{ is_granted('ROLE_COMPANY') ? 'Customer' : 'Restaurant' }}</h2>
+                </div>
+                <div class="card-body order-info-card-body">
+                    <h4 class="h4">
+                        {{
+                            is_granted('ROLE_COMPANY')
+                                ? (order.user.deleted ? 'Deleted user' : order.user.forename ~ ' ' ~ order.user.surname)
+                                : (order.company.deleted ? 'Deleted company' : order.company.name)
+                        }}
+                    </h4>
+                    <p class="mb-1">
+                        {% if is_granted('ROLE_COMPANY') %}
+                            <div class="row">
+                                <div class="col-1"><i class="bi bi-geo-alt me-1"></i></div>
+                                <div class="col-11">{{ order.deliveryStreet }} {{ order.deliverySn }},</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1"></div>
+                                <div class="col-11">{{ order.deliveryZip }} {{ order.deliveryCity }}</div>
+                            </div>
+                            <HR />
+                            <i class="bi bi-envelope me-1"></i> {{ order.user.email }}
+                        {% else %}
+                            <div class="row">
+                                <div class="col-1"><i class="bi bi-geo-alt me-1"></i></div>
+                                <div class="col-11">{{ order.company.street }} {{ order.company.sn }},</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1"></div>
+                                <div class="col-11">{{ order.company.zip }} {{ order.company.city }}</div>
+                            </div>
+                            <HR />
+                            {% if not order.company.deleted and order.company.email %}
+                                <i class="bi bi-envelope me-1"></i> {{ order.company.email }}<br>
+                            {% endif %}
+                            {% if not order.company.deleted and order.company.website %}
+                                <i class="bi bi-envelope me-1"></i> {{ order.company.website }}<br>
+                            {% endif %}
+                            {% if not order.company.deleted %}
+                                <i class="bi bi-envelope me-1"></i> {{ order.company.phone }}
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {% if order.status.name == "PENDING" %}
+                {% set status = "Pending" %}
+                {% set statusTheme = "warning" %}
+            {% elseif order.status.name == "DONE" %}
+                {% set status = "Done" %}
+                {% set statusTheme = "success" %}
+            {% elseif order.status.name == "CANCELLED" %}
+                {% set status = "Cancelled" %}
+                {% set statusTheme = "danger" %}
+            {% else %}
+                {% set status = "Unknown" %}
+                {% set statusTheme = "danger" %}
+            {% endif %}
+
+            {# Status #}
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="h5 mb-0">Status</h2>
+                </div>
+                <div class="card-body order-info-card-body">
+                    <h6 class="h6 alert alert-{{statusTheme}}" style="width: fit-content; font-weight: bold;">{{status}}</h6>
+                    <h5>Delivery address: {{ order.deliveryStreet }} {{ order.deliverySn }}, {{ order.deliveryZip }} {{ order.deliveryCity }}</h5>
+                    <p class="mb-1">
+                        <i class="bi bi-clock me-1"></i>Ordered: {{ order.created | format_datetime(locale: 'en') }}<BR />
+                        {% if order.done %}
+                            <i class="bi bi-truck me-1"></i>Delivered: {{ order.done | format_datetime(locale: 'en') }}
+                        {% else %}
+                            <i class="bi bi-truck me-1"></i>Delivered: -
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {# Message #}
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="h5 mb-0">Special request</h2>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">
+                        {{ order.customerNote }}
+                    </p>
+                </div>
+            </div>
+
+            {# Overview #}
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h5 mb-0">Order overview</h2>
+                </div>
+                <div class="card-body p-0 order-info-card-body">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="ps-4">Dish</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Price</th>
+                                <th scope="col" class="pe-4 text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set total = 0 %}
+                            {% for orderPartial in order.orderPartials %}
+                                {% set subTotal = orderPartial.priceSnapshot %}
+                                {% set total = total + subTotal %}
+                                <tr>
+                                    <td class="ps-4">{{ orderPartial.dish.name }}</td>
+                                    <td>{{ orderPartial.size != '' ? orderPartial.size : 'Default' }}</td>
+                                    <td>{{ orderPartial.priceSnapshot | format_currency('USD', {decimal_always_shown:true}, 'en') }}</td>
+                                    <td class="pe-4 text-end">{{ subTotal | format_currency('USD', {decimal_always_shown:true}, 'en') }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="ps-4 pb-3">
+                                        <em>Extras:
+                                        {% for extra in orderPartial.extras %}
+                                            {% if extra.type == 2 %}
+                                                {{ extra.group }}: {{ extra.extra }}{% if not loop.last %}, {% endif %}
+                                            {% else %}
+                                                {{ extra.extra }}{% if not loop.last %}, {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        </em>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {# Total price #}
+            <div class="row mt-4">
+                <div class="col-md-6 offset-md-6">
+                    <div class="alert alert-primary">
+                        <h3 class="h4 mb-0 text-end">
+                            Total: 
+                            <span class="fw-bold">{{ total | format_currency('USD', {decimal_always_shown:true}, 'en') }}</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="container position-absolute top-50 start-50 translate-middle">
+            <div class="alert alert-danger" role="alert">
+                You are not eligible to view this page.
+            </div>
+        </div>
+    {% endif %}
+</turbo-frame>

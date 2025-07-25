@@ -1,0 +1,143 @@
+<div {{ attributes }}>
+    {{ form_start(form, {
+            attr: {
+                'data-action': 'blur->live#update',
+                'enctype': 'multipart/form-data',
+                'data-controller': 'tooltip-initiator',
+            }
+        }
+    ) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.category) }}
+        {{ form_row(form.type) }}
+        <HR />
+        <p>
+            Add the available sizes for this dish:
+            <span
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip"
+                data-bs-title="Enter a price other than 0 to make a size available. Please note that the given size prices are additional to the standard price."
+            ><i class="bi bi-question-circle"></i></span>
+        </p>
+        {% for sizeField in form.sizes %}
+            {% if loop.index0 % 3 == 0 %}
+                <div class="row">
+            {% endif %}
+                    <div class="col" style="min-width: 150px;">
+                        <div class="form-group">            
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="dish-size-{{ sizeField.vars.name }}">{{ sizeField.vars.name }}</span>
+                                {{
+                                    form_widget(
+                                        sizeField,
+                                        {
+                                            'attr': {
+                                                'class': 'form-control',
+                                                'placeholder': sizeField.vars.name,
+                                                'aria-label': 'Dish size ' ~ sizeField.vars.name,
+                                                'aria-describedby': 'dish-size-' ~ sizeField.vars.name,
+                                                'max': '99.9',
+                                                'step': 'any',
+                                            }
+                                        }
+                                    )
+                                }}
+                            </div>
+                            {{ form_errors(sizeField) }}
+                        </div>
+                    </div>
+            {% if loop.index0 % 3 == 2 %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <HR />
+
+        {# Extras #}
+        <label for="dish-extras-selected-container" class="form-label required me-3">
+            Extras
+        </label>
+        <span
+            class="btn btn-primary btn-sm me-3"
+            data-bs-toggle="modal"
+            data-bs-target="#dish-extras-modal"
+            {{ stimulus_action('extras', 'openExtraModal', 'click') }}
+        >Add extra</span>
+        <span
+            class="btn btn-primary btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#dish-extras-modal"
+            {{ stimulus_action('extras', 'openGroupModal', 'click') }}
+        >Manage Groups</span>
+        <div
+            id="dish-extras-selected-container"
+            {{ stimulus_target('extras', 'selectedContainer') }}
+            class="form-control select-container-with-divider"
+            data-live-ignore
+        >
+            <div
+                {{ stimulus_target('extras', 'extrasMultiContainer') }}
+                class="extrasContainerClass"
+            ></div>
+            <div class="select-container-divider"></div>
+            <div
+                {{ stimulus_target('extras', 'extrasSingleContainer') }}
+                class="extrasContainerClass"
+            >
+                <div id="extras-single-group-Default" class="mb-3">
+                    <h5 class="text-center fw-bold">Default</h5>
+                    <HR />
+                    <div id="extras-single-group-sub-container-Default"></div>
+                </div>
+            </div>
+        </div>
+        {{ form_row(form.extras, {
+            attr: {
+                'data-extras-target': 'extras'
+            }
+        }) }}
+        <HR />
+
+        {# Image #}
+        {% if form.vars.value.img %}
+            <img
+                src="{{ form.vars.value.img }}?v={{ random() }}"
+                style="width: 150px; border-radius: 75px;"
+                loading="eager"
+            />
+        {% else %}
+            Product image unset
+        {% endif %}
+        <BR />
+        <BR />
+        {{ form_row(form.img) }}
+        <HR />
+        {% if status is defined and status != 3 and message is defined and message != '' %}
+            <BR />
+            <div class="alert {{ status is same as(1) ? 'alert-success' : 'alert-danger' }}">{{ message }}</div>
+            {% if status == 1 %}
+                <a
+                    href="{{ path('create_product') }}"
+                    {{
+                            stimulus_controller('reload-form')
+                            |
+                            stimulus_target('reload-form', 'reloadLink')
+                    }}
+                    style="display: none;"
+                ></a>
+            {% endif %}
+        {% endif %}
+        <BR />
+        <button
+                id="createProductSaveBtn"
+                type="button"
+                class="btn btn-primary {{ not this.isValidForm ? 'disabled-btn' : '' }}"
+                data-action="live#action"
+                data-live-action-param="files|save"
+                data-loading="addClass(disabledBtn) addAttribute(disabled)"
+                data-button-type="formSubmit"
+        >Save</button>
+    {{ form_end(form) }}
+</div>

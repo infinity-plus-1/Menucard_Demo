@@ -1,0 +1,15 @@
+<div{{ attributes }}>
+    <button
+        {{ stimulus_action('dish', 'delete') }}
+    >
+        Delete
+    </button>
+    <button
+        id="delete-dish-{{ dishId }}"
+        data-action="click->live#action"
+        data-live-action-param="delete"
+        data-live-dish-id-param="{{ dishId }}"
+        class="d-none"
+    ></button>
+    <span id="delete-dish-response-{{ dishId }}"></span>
+</div>

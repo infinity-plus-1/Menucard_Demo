@@ -1,0 +1,91 @@
+<turbo-frame id="restaurantSuggestions">
+    {% if status is defined and status == 200 and suggestedRestaurants | length > 0 and zip is defined and zip %}
+        <div
+            id="suggestedRestaurantsSlide"
+            class="carousel slide"
+        >
+            <div class="carousel-indicators" style="z-index: 3;">
+                {% for restaurant in suggestedRestaurants %}
+                    <button
+                        type="button"
+                        data-bs-target="#suggestedRestaurantsSlide"
+                        data-bs-slide-to="{{ loop.index0 }}"
+                        class="{{ loop.first ? 'active' : '' }}"
+                        aria-current="true"
+                        aria-label="Slide {{ loop.index }}"
+                    ></button>
+                {% endfor %}
+            </div>
+            <div
+                class="carousel-inner"
+                style="max-height: 100%;"
+                {{ stimulus_controller('select-restaurant') }}
+            >
+                {% for restaurant in suggestedRestaurants %}
+                    <div
+                        class="cursor-pointer carousel-item {{ loop.first ? 'active' : '' }} restaurant-suggestions-carousal-item"
+                        {{
+                            stimulus_controller('select-restaurant', { 'restaurant': restaurant.id, 'zip': zip }) |
+                            stimulus_action('select-restaurant', 'openRestaurant', 'click')
+                        }}
+                    >
+                        <img src="{{restaurant.logo ? '/' ~ restaurant.logo : asset('images/restaurant.svg') }}?v={{ random() }}" class="r-s-carousel-img d-block w-100" alt="{{ restaurant.name }}" loading="eager">
+                        <div class="r-s-restaurant-information carousel-caption d-md-block">
+                            <h1 class="user-select-none">{{ restaurant.name }}</h1>
+                            <BR />
+                            <div style="font-size: 20px;">
+                                <span class="user-select-none">{{ restaurant.averageRating | format_number({fraction_digit: 1}) }}
+                                {% if restaurant.averageRating > 0 %}
+                                    {% set ratingCounter = restaurant.averageRating %}
+                                    {% for i in 1..restaurant.averageRating %}
+                                        {% set ratingCounter = ratingCounter - 1 %}
+                                        <i class="bi bi-star-fill" style="color: gold;"></i>
+                                    {% endfor %}
+                                    {% if ratingCounter >= 0.5 and ratingCounter < 1.0 %}
+                                        <i class="bi bi-star-half" style="color: gold;"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="bi bi-star" style="color: gold;"></i>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#suggestedRestaurantsSlide"
+                data-bs-slide="prev" style="z-index: 3;"
+            >
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#suggestedRestaurantsSlide"
+                data-bs-slide="next"
+                style="right: 7vw; z-index: 3;"
+            >
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    {% elseif status is defined and status == 200 and zip is defined and zip %}
+        <div class="alert alert-warning text-center my-4 skew-reverse-container" role="alert">
+            <h5 class="mb-2"><i class="bi bi-geo-alt-fill me-1"></i>No restaurants found for ZIP code {{ zip }}</h5>
+            <p class="mb-0">Please check the ZIP code or try a different location.</p>
+        </div>
+    {% elseif status is defined and message is defined and message != '' %}
+        <div class="alert alert-danger text-center my-4 skew-reverse-container" role="alert">
+            <h5 class="mb-2">Error {{ status }}</h5>
+            <p class="mb-0">{{ message }}</p>
+        </div>
+    {% else %}
+        <div class="alert alert-danger text-center my-4 skew-reverse-container" role="alert">
+            <h5 class="mb-2">An unknown error occured</h5>
+            <p class="mb-0">Please reload and try again.</p>
+        </div>
+    {% endif %}
+</turbo-frame>

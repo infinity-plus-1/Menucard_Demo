@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Finalize Order{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_USER') %}
+    <div
+        class="container"
+        {{
+            stimulus_controller (
+                'order-overview',
+                {
+                    'alignTimerLink': '/ttl',
+                    'submitOrderLink': path('order_confirm'),
+                    'orderId': orderId,
+                    'orderConfirmedLink': path('order_confirmed'),
+                }
+            )
+        }}
+    >
+    {% if status is defined == 200 %}
+        <div class="order-summary">
+            <h2 class="mb-2">Order overview</h2>
+            <div class="order-information mb-4">
+                <h3>Your order from {{ company.name }}</h3>
+                <h5
+                    {{ stimulus_target('order-overview', 'timerHeader') }}
+                >
+                    Order valid for
+                    <span {{ stimulus_target('order-overview', 'timer') }}>
+                        {{ (ttl / 60) | number_format(2) }}
+                    </span>
+                    minute(s)
+                </h5>
+            </div>
+        <div class="order-table mb-3">
+            <div class="row order-table-header">
+                <div class="col-4">Article</div>
+                <div class="col-6">Extras</div>
+                <div class="col-2">Total price</div>
+            </div>
+
+            {% set total = 0 %}
+            {% set i = 0 %}
+            {% for dish in dishes %}
+                {% set total = total + dish.total %}
+                {% if i % 2 != 0 %}
+                    {% set rowClass = 'order-table-row-odd' %}
+                {% else %}
+                    {% set rowClass = 'order-table-row-even' %}
+                {% endif %}
+                <div class="row order-table-row {{ rowClass }}">
+                    <div class="col-4">{{ dish.name | u.truncate(30, '...') }}</div>
+                    <div class="col-6">
+                        {% for extra in dish.extras %}
+                            {% if extra.type and extra.type == 2 %}
+                                {{ extra.group }}: {{ extra.extra }}{% if not loop.last %}, {% endif %}
+                            {% else %}
+                                {{ extra.extra }}{% if not loop.last %}, {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="col-2">{{ dish.total | format_currency('USD', {decimal_always_shown:true}, 'en') }}</div>
+                </div>
+                {% set i = i + 1 %}
+            {% endfor %}
+        </div>
+
+            <div class="order-total">
+                Total sum: <span>{{ total | format_currency('USD', {decimal_always_shown:true}, 'en') }} €</span>
+            </div>
+            <div class="alert alert-secondary" role="alert">
+                Delivery address: {{ address.street }} {{ address.sn }}, {{ address.zip }} {{ address.city }}
+            </div>
+            <div class="form-floating">
+                <textarea
+                    class="form-control styled-textarea"
+                    placeholder="Your special requests (max. 200 characters)"
+                    {{
+                        stimulus_target('order-overview', 'specialReqs')
+                        | stimulus_action('order-overview', 'specialReqsCount')
+                    }}
+                ></textarea>
+                <label for="floatingTextarea">
+                    Your special requests (
+                    <span {{ stimulus_target('order-overview', 'specialReqsCount') }}>200</span>
+                    characters remaining)
+                </label>
+            </div>
+            <button
+                class="btn btn-success mt-4 w-100"
+                type="submit"
+                {{
+                    stimulus_action('order-overview', 'submitOrder') |
+                    stimulus_target('order-overview', 'submitButton')
+                }}
+                
+            >
+                Confirm order
+            </button>
+        </div>
+    {% else %}
+        <div class="alert alert-danger mt-4" role="alert">
+            Error {{ status }}: {{ message }}
+        </div>
+    {% endif %}
+    </div>
+{% else %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="alert alert-danger" role="alert">
+            You are not eligible to view this page.
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

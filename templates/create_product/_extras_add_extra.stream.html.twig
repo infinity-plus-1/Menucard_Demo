@@ -1,0 +1,95 @@
+<turbo-stream action="update" target="dish-extras-modal-body">
+    <template>
+        {% if status is defined and status == 200 %}
+            <div id="extra-add-header">
+                <div class="mb-3">
+                    <h5>Select the extra type: 
+                        <span
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Multi-selectable extras stay in one group. Single-selectable extras can be gathered in up to four different groups."
+                        ><i class="bi bi-question-circle"></i></span>
+                    </h5>
+                    <input 
+                        type="radio"
+                        class="btn-check"
+                        name="extra-type-options"
+                        id="extra-add-multi"
+                        autocomplete="off"
+                        checked
+                        {{
+                            stimulus_action('extras', 'setExtraType', 'change', {'type': 'multi'}) |
+                            stimulus_target('extras', 'multiExtraType')
+                        }}
+                    />
+                    <label class="btn" for="extra-add-multi">Multi-select extra</label>
+
+                    <input 
+                        type="radio"
+                        class="btn-check"
+                        name="extra-type-options"
+                        id="extra-add-single"
+                        autocomplete="off"
+                        {{
+                            stimulus_action('extras', 'setExtraType', 'change', {'type': 'single'}) |
+                            stimulus_target('extras', 'singleExtraType')
+                        }}
+                    />
+                    <label class="btn" for="extra-add-single">Single-select extra</label>
+
+                    {% if groups and groups.groups and groups.groups | length > 0 %}
+                        <div id="selectGroupContainer" {{ stimulus_target('extras', 'selectGroupContainer') }}>
+                            <span
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                data-bs-custom-class="custom-tooltip"
+                                data-bs-title="Select the group the Single-select extra belongs to."
+                            ><i class="bi bi-question-circle"></i></span>
+                            <div class="btn-group">
+                                <button
+                                    class="btn btn-primary btn-sm"
+                                    type="button"
+                                    {{ stimulus_target('extras', 'groupSelected') }}
+                                >{{ groups.groups | first.name }}</button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for group in groups.groups %}
+                                        <li>
+                                            <span
+                                                class="dropdown-item cursor-pointer groupSelectElement {{ loop.first ? 'active' : '' }}"
+                                                id="select-group-{{ group.name }}"
+                                                {{
+                                                    stimulus_action(
+                                                        'extras',
+                                                        'selectGroup',
+                                                        'click',
+                                                        {'id': 'select-group-' ~ group.name, 'group': group.name}
+                                                    )
+                                                }}
+                                            >{{group.name}}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div id="extra-add-body">
+                {{ component('ExtraFinder') }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                An error occured while trying to load the content.
+            </div>
+        {% endif %}
+    </template>
+</turbo-stream>

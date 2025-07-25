@@ -1,0 +1,65 @@
+<div{{ attributes }}>
+    <div class="input-group">
+        <span
+            class="input-group-text"
+            id="extra-add-name-input-label"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="You can select one name from the dropdown if it exists already."
+        ><i class="bi bi-question-circle"></i></span>
+        <div class="form-floating">
+            <input
+                type="search"
+                id="extra-add-name-input"
+                class="form-control"
+                placeholder="Give your extra a name"
+                aria-label="Extra name"
+                aria-describedby="extra-add-name-input-label"
+                data-model="debounce(500)|extraName"
+                autocomplete="off"
+                {{ stimulus_target('extras', 'extraNameInput') }}
+            />
+            <label for="extra-add-name-input">Give your extra a name</label>
+        </div>
+    </div>
+    <ul
+        {{ stimulus_target('extras', 'extraNamesSuggestion') }}
+        class="dropdown-menu {{ extras | length > 0 ? 'd-block' : 'd-none' }}"
+        style="width: 100%;"
+    >
+    {% for extra in extras %}
+        <li>
+            <span
+                class="dropdown-item cursor-pointer"
+                {{ stimulus_action('extras', 'autoFillExtraName', 'click', {'name': extra.name}) }}
+            >
+                {{ extra.name }}
+            </span>
+        </li>
+    {% endfor %}
+    </ul>
+    <div class="input-group mt-3">
+        <span
+            class="input-group-text"
+            id="extra-add-price-input-label"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            data-bs-title="Only use an additional charge, not the total price of the dish with that extra."
+        ><i class="bi bi-question-circle"></i></span>
+        <div class="form-floating">
+            <input
+                type="search"
+                id="extra-add-price-input"
+                class="form-control"
+                placeholder="Set a price for this extra"
+                aria-label="Extra price"
+                aria-describedby="extra-add-price-input-label"
+                autocomplete="off"
+                {{ stimulus_target('extras', 'extraPriceInput') }}
+            />
+            <label for="extra-add-price-input">Set a price for this extra</label>
+        </div>
+    </div>
+</div>

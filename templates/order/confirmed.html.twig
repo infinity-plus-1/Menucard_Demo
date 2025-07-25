@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Order Completed{% endblock %}
+
+{% block body %}
+{% if is_granted('ROLE_USER') %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        {% if status is defined and status == 200 and order %}
+                            <svg width="80" height="80" fill="none" viewBox="0 0 24 24" class="mb-4">
+                                <circle cx="12" cy="12" r="12" fill="#e6f9ed"/>
+                                <path d="M7 13l3 3 7-7" stroke="#2ecc71" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="mb-3 text-success">Thank you for your order!</h2>
+                            <p class="mb-4">
+                                Order #{{order.id}} has been successfully placed.<br>
+                                The restaurant will delivery the food in the stated time.<br>
+                                You will receive a confirmation email shortly.
+                            </p>
+                        {% elseif status is defined and status == 400 %}
+                            <svg width="80" height="80" fill="none" viewBox="0 0 24 24" class="mb-4">
+                                <circle cx="12" cy="12" r="12" fill="#f9e6e6"/>
+                                <path d="M7 7 L 17 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 7 L 7 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="mb-3 text-error">Error</h2>
+                            <p class="mb-4">
+                                The provided data is invalid.
+                            </p>
+                        {% elseif status is defined and status == 401 %}
+                            <svg width="80" height="80" fill="none" viewBox="0 0 24 24" class="mb-4">
+                                <circle cx="12" cy="12" r="12" fill="#f9e6e6"/>
+                                <path d="M7 7 L 17 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 7 L 7 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="mb-3 text-error">Error</h2>
+                            <p class="mb-4">
+                                You need to be logged in to view this page.
+                            </p>
+                        {% elseif status is defined and status == 404 %}
+                            <svg width="80" height="80" fill="none" viewBox="0 0 24 24" class="mb-4">
+                                <circle cx="12" cy="12" r="12" fill="#f9e6e6"/>
+                                <path d="M7 7 L 17 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 7 L 7 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="mb-3 text-error">Error</h2>
+                            <p class="mb-4">
+                                The provided order could not be found.
+                            </p>
+                        {% else %}
+                            <svg width="80" height="80" fill="none" viewBox="0 0 24 24" class="mb-4">
+                                <circle cx="12" cy="12" r="12" fill="#f9e6e6"/>
+                                <path d="M7 7 L 17 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17 7 L 7 17" stroke="#cc2e2e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="mb-3 text-error">Error</h2>
+                            <p class="mb-4">
+                                An unknown error occured.
+                            </p>
+                        {% endif %}
+                        <a href="{{ path('home') }}" class="btn btn-primary">
+                            Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="alert alert-danger" role="alert">
+            You are not eligible to view this page.
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

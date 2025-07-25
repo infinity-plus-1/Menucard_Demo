@@ -1,0 +1,16 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    session:
+    #    handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler
+    #    gc_maxlifetime: '%env(REDIS_TTL)%'
+
+    secret: '%env(APP_SECRET)%'
+    # csrf_protection: true
+
+    # Note that the session will be started ONLY if you read or write from it.
+
+    #esi: true
+    fragments: true
+when@test:
+    framework:
+        test: true

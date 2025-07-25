@@ -1,0 +1,109 @@
+<turbo-frame id="home_carousel">
+    <div class="container">
+        <h1 class="text-center">Get 
+            <span class="text-uppercase font-weight-bold text-danger">
+                inspired 
+            </span>
+            by a pullout of our delicious
+            <span class="text-uppercase font-weight-bold text-danger">
+                meals
+            </span>
+        </h1> 
+    </div>
+    <BR />
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-7">
+                <div id="home-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#home-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#home-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#home-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div
+                            class="carousel-item active"
+                            data-home-target="carouselImgs"
+                            {{ stimulus_controller('_home-carousel', {
+                                selectedCarouselImg: 0
+                            }) }}
+                            data-action="click->_home-carousel#gotoProduct"
+                            data-bs-interval="5000"
+                        >
+                            <img class="d-block w-100 vh-75 fit-cover"
+                                src="{{ asset('images/paella.png') }}" alt="Paella">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Paella</h5>
+                                <p>Feel vibes from the sun...</p>
+                            </div>
+                        </div>
+                        <div
+                            class="carousel-item"
+                            data-_home-carousel-target="carouselImgs"
+                            {{ stimulus_controller('_home-carousel', {
+                                selectedCarouselImg: 1
+                            }) }}
+                            data-action="click->_home-carousel#gotoProduct"
+                            data-bs-interval="5000"
+                        >
+                            <img class="d-block w-100 vh-75 fit-cover"
+                                src="{{ asset('images/spaghetti.png') }}" alt="Spaghetti Bolognese">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Spaghetti Bolognese</h5>
+                                <p>Classic, but not outdated!</p>
+                            </div>
+                        </div>
+                        <div
+                            class="carousel-item"
+                            data-_home-carousel-target="carouselImgs"
+                            {{ stimulus_controller('_home-carousel', {
+                                selectedCarouselImg: 2
+                            }) }}
+                            data-action="click->_home-carousel#gotoProduct"
+                            data-bs-interval="5000"
+                        >
+                            <img class="d-block w-100 vh-75 fit-cover"
+                                src="{{ asset('images/tiramisu.png') }}" alt="Tiramisu">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>Tiramisu</h5>
+                                <p>Sweet, beloved dessert!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#home-carousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#home-carousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-4" style="overflow: hidden;">
+                <div style="height: 100%; width: 100%;"
+                    class="font-weight-light text-uppercase flex-column-start-around">
+                    <div style="opacity: 0;" class="fsize-2-5vw">
+                        <span>Slide through</span>
+                        <BR />
+                        <span>our promotions</span>
+                    </div>
+                    <div style="opacity: 0;" class="fsize-2-5vw">
+                        <span>to begin</span>
+                        <p>your adventure </p>
+                    </div>
+                    <div style="opacity: 0;" class="fsize-2-5vw">
+                        <span>in the jungle</span>
+                        <p>of tastes...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container text-center">
+        <span style="font-size: 2em;" class="badge badge-pill badge-danger">
+            Inspiration
+        </span>
+    </div>
+</turbo-frame>

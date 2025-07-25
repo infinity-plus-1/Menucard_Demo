@@ -1,0 +1,38 @@
+<div{{ attributes.defaults(stimulus_controller('show-ratings')) }}>
+    {% set orders = this.orders %}
+    {% if orders | length > 0 %}
+        {% if page > 1 %}
+            <div id="ratings-page-{{ page - 1 }}" data-live-ignore="true"></div>
+        {% endif %}
+        <div id="ratings-page-{{ page }}" data-live-ignore="true">
+                {% for order in this.orders %}
+                    <div style="height: 100%;">
+                        <h5>{{ order.user.deleted ? 'Deleted user' : order.user.forename }} {{ order.user.deleted ? '' : order.user.surname [:1] }}.</h5>
+                        <div>
+                            {% set totalRating = order.rating %}
+                            {% for i in 1..totalRating %}
+                                <i class="bi bi-star-fill" style="color: gold;"></i>
+                                {% set totalRating = totalRating - 1 %}
+                            {% endfor %}
+                        </div>
+                        <span>{{ order.ratingText }}</span>
+                    </div>
+                    <HR />
+                {% endfor %}
+        </div>
+        {% if this.hasNextPage %}
+            <div
+                style="width: 100%; height: 20px;"
+                {{
+                    stimulus_target('show-ratings', 'loader') |
+                    stimulus_action('live', 'action', 'loadMore', { 'action': 'loadMore' })
+                }}
+            ></div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            There are no ratings available for this company yet.
+        </div>
+    {% endif %}
+    </div>
+</div>

@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dishes{% endblock %}
+
+{% block body %}
+
+{% if is_granted('ROLE_USER') %}
+    <BR />
+    <div class="container">
+        {{ component('OrderView', {
+            pager: pager,
+            isUser: isUser,
+            status: status,
+            pending: pending,
+            page: page,
+            maxRes: maxRes,
+        }) }}
+    </div>
+
+    <a id="order-link" href="" data-turbo-frame="order-frame"></a>
+    <div id="order-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div id="order-modal-header-content"></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <turbo-frame id="order-frame">...</turbo-frame>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a id="order-rate" href="" data-turbo-frame="order-rate-frame"></a>
+    <div id="order-rate-modal" class="modal fade" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span>Rate&nbsp;</span><div id="order-rate-modal-header-content"></div>
+                </div>
+                <div class="modal-body">
+                    <h5>Please share you experience with others</h5>
+                    <turbo-frame id="order-rate-frame">...</turbo-frame>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-danger container mt-4" role="alert">
+        You need to be logged in to view this page.
+    </div>  
+{% endif %}
+
+{% endblock %}

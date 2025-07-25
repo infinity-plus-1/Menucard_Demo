@@ -1,0 +1,75 @@
+<div class="col-md-6">
+    <div class="fh5co-food-menu to-animate-2 fadeIn animated">
+        <h2 class="fh5co-drinks">{{type}}</h2>
+        <ul>
+            {% for dish in dishes %}
+                <li {{ stimulus_controller('dish', { id: dish.id }) }}>
+                    <div
+                        class="foodmenu-img-div"
+                        {{ stimulus_action('dish', 'view', 'click') }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#dish-modal"
+                    >
+                        <img src="{{dish.img ? '/' ~ dish.img : asset('images/no_food_img_available.svg') }}" alt="{{dish.name}}" class="img-responsive" />
+                    </div>
+                    <div
+                        class="fh5co-food-desc"
+                        {{ stimulus_action('dish', 'view', 'click') }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#dish-modal"
+                    >
+                        <div>
+                            <h3>{{dish.name}}</h3>
+                            <p>{{dish.description | u.truncate(120, '...')}}</p>
+                        </div>
+                    </div>
+                    <div class="fh5co-food-pricing"
+                        {{ stimulus_action('dish', 'view', 'click') }}
+                        data-bs-toggle="modal"
+                        data-bs-target="#dish-modal"
+                    >
+                        {{dish.price | format_currency('USD', {decimal_always_shown:true}, 'en')}}
+                    </div>
+                    {% if is_granted('ROLE_USER') and inDeliveryRange %} {# abändern #}
+                        <div
+                            class="dish-qty-selector"
+                            {{ stimulus_controller('food-quantity-selector', {'id': dish.id, 'price': dish.price }) }}
+                            data-action="food-quantity-selector:addDish->food-cart-collector#addDish food-quantity-selector:getCartFromParent->food-cart-collector#getCart food-quantity-selector:removeDishes->food-cart-collector#removeDishes"
+                        >
+                            <p
+                                class="mb-0 food-selector unselectable"
+                                {{
+                                    stimulus_action(
+                                        'food-quantity-selector',
+                                        'addDish',
+                                        'click',
+                                        {
+                                            'dish': dish.id, 'dishPrice': dish.price
+                                        }
+                                    )
+                                }}
+                            >+</p>
+                            <p
+                                class="mb-0" {{ stimulus_target('food-quantity-selector', 'counter') }}
+                                id="dish-counter-{{ dish.id }}"
+                            >0</p>
+                            <p
+                                class="mb-0 food-selector unselectable"
+                                {{
+                                    stimulus_action(
+                                        'food-quantity-selector',
+                                        'removeDishes',
+                                        'click',
+                                        {
+                                            'dish': dish.id, 'dishPrice': dish.price
+                                        }
+                                    )
+                                }}
+                            >-</p>
+                        </div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

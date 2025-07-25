@@ -1,0 +1,102 @@
+<turbo-frame id="navbar_dropdown">
+{% if is_granted("ROLE_USER") %}
+    <ul style="margin-right: 10vw !important;" class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+            <a
+                class="nav-link dropdown-toggle"
+                id="navbarLoginDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                style="cursor: pointer;"
+            >
+                Dashboard
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarLoginDropdown">
+            <a href="{{ path('dashboard') }}" class="dropdown-item" style="cursor: pointer;">
+                Dashboard
+            </a>
+            <div class="dropdown-divider"></div>
+            <a
+                class="dropdown-item"
+                style="cursor: pointer;"
+                data-controller="logout"
+                {{
+                    stimulus_action(
+                        'logout',
+                        'logout',
+                        'click'
+                    )
+                }}
+            >
+                Logout
+            </a>
+            </div>
+        </li>
+    </ul>
+{% else %}
+    <ul style="margin-right: 10vw !important;" class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+            <a
+                class="nav-link dropdown-toggle"
+                id="navbarLoginDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                data-controller="login"
+                style="cursor: pointer;"
+            >
+                Login
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarLoginDropdown">
+            <a
+                class="dropdown-item"
+                style="cursor: pointer;"
+                data-controller="login submit-modal"
+                {{
+                    stimulus_action(
+                        'login', 'login', 'click'
+                    )
+                    |
+                    stimulus_action(
+                        'submit-modal', 'defaultEmailLoginModal', 'login:login'
+                    )
+                    |
+                    stimulus_controller('submit-modal', {
+                        title: 'Enter your login details',
+                        successTimer: 3000,
+                        enterMailTxt: 'Enter your mail address',
+                        mailPlaceholder: 'Your address',
+                        enterPasswordTxt: 'Enter your secret password',
+                        missingText: 'Whoops, seems not all data were sent',
+                        unknownText: 'Uh oh, an unknown error occured, try again later',
+                        successResponse: 'login_success',
+                        failureResponse: 'login_unsuccessful',
+                        failureText: 'The email address or password you entered is incorrect.',
+                        incompleteResponse: 'partial'
+                    })
+                }}
+            >
+                Login
+            </a>
+            <div class="dropdown-divider"></div>
+            <a
+                class="dropdown-item"
+                style="cursor: pointer;"
+                {{
+                    stimulus_action(
+                        'form-modal',
+                        'openModal',
+                        'click'
+                    )
+                }}
+            >
+                Register
+            </a>
+            </div>
+        </li>
+    </ul>
+{% endif %}
+</turbo-frame>

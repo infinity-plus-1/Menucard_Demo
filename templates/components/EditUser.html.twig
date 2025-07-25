@@ -1,0 +1,68 @@
+<div{{ attributes }}>
+    {{
+        form_start (
+            form, {
+                attr: {
+                    'data-action': 'blur->live#update',
+                    'enctype': 'multipart/form-data',
+                }
+            }
+        )
+    }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.forename) }}
+        {{ form_row(form.surname) }}
+        {{ form_row(form.street) }}
+        {{ form_row(form.sn) }}
+        {{ form_row(form.zipcode) }}
+        {{ form_row(form.city) }}
+        {{ form_row(form.oldPassword) }}
+    {{ form_end(form) }}
+
+    {% if status is defined and message is defined %}
+        {% if status == 200 and message != '' %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+            <a
+                href="{{ path('edit_user') }}"
+                {{
+                        stimulus_controller('reload-form')
+                        |
+                        stimulus_target('reload-form', 'reloadLink')
+                }}
+                style="display: none;"
+            ></a>
+        {% elseif message != '' %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% if errors | length > 0 %}
+                {% for error in errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <input type="hidden" name="token_delete" value="{{ csrf_token('delete-user') }}">
+    <button
+        class="btn btn-primary"
+        data-action="live#action"
+        data-live-action-param="save"
+        type="button"
+    >
+        Submit
+    </button>
+    <HR />
+    <button
+        class="btn btn-danger"
+        {{
+            stimulus_controller('delete-user') |
+            stimulus_action('delete-user', 'delete')
+        }}
+    >
+        Delete account
+    </button>
+</div>

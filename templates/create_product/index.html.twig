@@ -1,0 +1,90 @@
+<turbo-frame id="dashboard_window">
+    {% if is_granted('ROLE_USER') %}
+        {% if status is defined and status == 200 %}
+            <div
+                class="container"
+                {{
+                    stimulus_controller('extras', {
+                        'addExtraLink': '/dish/addExtra',
+                        'manageGroupLink': '/dish/manageGroups',
+                        'deleteGroupLink': '/dish/deleteGroup',
+                        'extras': '{}',
+                        'groups': '{"Default": {"group": {"name": "Default", "identifier": 0},"extras": {}}}',
+                    })
+                }}
+            >
+                {{
+                    component('CreateProduct')
+                }}
+                {# Modal #}
+                {# This modal is used to add extras to the dish #}
+                <div
+                    class="modal fade"
+                    id="dish-extras-modal"
+                    data-bs-backdrop="static"
+                    data-bs-keyboard="false"
+                    tabindex="-1"
+                    aria-labelledby="dish-extras-modal-label"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1
+                                    class="modal-title fs-5"
+                                    id="dish-extras-modal-label"
+                                    {{ stimulus_target('extras', 'modalLabel') }}
+                                ></h1>
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    aria-label="Close"
+                                    {{ stimulus_action('extras', 'closeModal') }}
+                                ></button>
+                            </div>
+                            <div
+                                id="dish-extras-modal-body"
+                                class="modal-body"
+                                {{ stimulus_target('extras', 'modalBody') }}
+                            >
+                                Loading...
+                            </div>
+                            <div class="modal-footer">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    id="dish-extras-modal-abort-btn"
+                                    {{ stimulus_action('extras', 'closeModal') }}
+                                >Close</button>
+                                <button
+                                    type="button"
+                                    id="dish-extras-modal-submit-btn"
+                                    class="btn btn-primary"
+                                    {{ stimulus_target('extras', 'submitBtn') }}
+                                >OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elseif status is defined and message is defined and message != '' %}
+            <div class="container">
+                <div class="alert alert-danger" role="alert">
+                    Error {{ status }}: {{ message }}
+                </div>
+            </div>
+        {% else %}
+            <div class="container">
+                <div class="alert alert-danger" role="alert">
+                    An unknown error occured.
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="container">
+            <div class="alert alert-danger" role="alert">
+                You are not eligible to view this page.
+            </div>
+        </div>
+    {% endif %}
+</turbo-frame>

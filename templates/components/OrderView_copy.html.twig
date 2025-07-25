@@ -1,0 +1,237 @@
+<div{{ attributes }}>
+        {# templates/order_list.html.twig #}
+    <div class="container py-5 table-responsive">
+        <div class="mb-4 row">
+            <h2 class="col-4">Your Orders</h2>
+            <input
+                class="col"
+                id="filterOrdersInput"
+                data-model="debounce(300)|filter"
+                placeholder="Filter orders..."
+                data-action="live#action"
+                data-live-action-param="filterOrders"
+            />
+        </div>
+        {% if orders is not empty %}
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Order Date</th>
+                        <th>
+                            {% if isUser %}
+                                Company
+                            {% else %}
+                                Customer
+                            {% endif %}
+                        </th>
+                        <th>Dishes</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr
+                            {{
+                                stimulus_controller(
+                                    'order-list', {
+                                        'order': order.id,
+                                        'cancelLink': path('cancelOrder'),
+                                        'completeLink': path('completeOrder'),
+                                    }
+                                )
+                            }}
+                            {{ stimulus_target('order-list', 'orderElement') }}
+                        >
+                            <td>{{ order.id }}</td>
+                            <td
+                                {{ stimulus_target('order-list', 'datetime') }}
+                            >
+                                {{ order.created|date('Y-m-d H:i') }}
+                            </td>
+                            <td>
+                                {% if isUser %}
+                                    {{ order.company.name }}
+                                {% else %}
+                                    {{ order.user.forename }} {{ order.user.surname }}
+                                {% endif %}
+                                
+                            </td>
+                            <td>
+                                <ul class="mb-0">
+                                    {% set total = 0 %}
+                                    {% for partial in order.orderPartials %}
+                                        <li>
+                                            {{ partial.dish.name }} | Size: {{ partial.size != '' ? partial.size : 'Default' }}
+                                            {% if partial.note %}<br><small class="text-muted">{{ partial.note }}</small>{% endif %}
+                                            {% set total = total + partial.priceSnapshot %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                {{ total|number_format(2, '.', ',') }} €
+                            </td>
+                            <td>
+                                {% if order.status == 1 %}
+                                    <span class="badge bg-warning text-dark">Open</span>
+                                {% elseif order.status == 2 %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <span class="badge bg-danger text-light">Cancelled</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button
+                                    class="btn btn-sm btn-outline-primary"
+                                    {{ stimulus_action('order-list', 'view', 'click') }}
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#order-modal"
+                                >
+                                    Details
+                                </button>
+                            </td>
+                            <td>
+                                {% if order.status == 1 %}
+                                    {% if not isUser %}
+                                        <button
+                                            class="btn btn-sm btn-success"
+                                            {{
+                                                stimulus_target('order-list', 'completeButton') |
+                                                stimulus_action('order-list', 'complete')
+                                            }}
+                                            disabled
+                                        >
+                                            Complete
+                                        </button>
+                                    {% endif %}
+                                    <button
+                                        class="btn btn-sm btn-danger"
+                                        {{
+                                            stimulus_target('order-list', 'cancelButton') |
+                                            stimulus_action('order-list', 'cancel')
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                {% elseif order.status == 2 %}
+                                    {% if not isUser %} {# Abändern #}
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        {{ stimulus_action('order-list', 'rate', 'click') }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#order-rate-modal"
+                                    >
+                                        Rate
+                                    </button>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="paginationContainer">
+                <div class="maxResultSelector">
+                    <h5>Max orders:</h5>
+                    <div class="btn-group ms-3" {{ stimulus_controller('order-list') }}>
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            style="background-color: #f8f9fa; color: black;"
+                            {{ stimulus_target('order-list', 'leftButton') }}
+                        >
+                            {{maxRes}}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown"
+                            style="background-color: #f8f9fa; color: black;"
+                            aria-expanded="false"
+                        >
+                            <span class="visually-hidden"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li
+                                {{
+                                    stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 1}) |
+                                    stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 1})
+                                }}
+                            >
+                                <span class="dropdown-item" role="button">1</span>
+                            </li>
+                            <li
+                                {{
+                                    stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 2}) |
+                                    stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 2})
+                                }}
+                            >
+                                <span class="dropdown-item" role="button">2</span>
+                            </li>
+                            <li 
+                                {{
+                                    stimulus_action('order-list', 'changeMaxRes', 'click', {'mRes': 3}) |
+                                    stimulus_action('live', 'action', 'click', {'action': 'changeCount', 'mRes': 3})
+                                }}
+                            >
+                                <span class="dropdown-item" role="button">3</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <nav class="paginationNavigation" aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li
+                            class="page-item user-select-none"
+                            data-action="click->live#action"
+                            data-live-action-param="decrement"
+                            role="button"
+                        >
+                            <span class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </span>
+                        </li>
+                        {% for i in 1..pages %}
+                            {% if (i-1) == offset %}
+                                {% set active = " active" %}
+                            {% else %}
+                                {% set active = "" %}
+                            {% endif %}
+                            <li
+                                class="page-item user-select-none{{active}}"
+                                data-action="click->live#action"
+                                data-live-action-param="setPage"
+                                data-live-new-page-param="{{i}}"
+                                role="button"
+                            >
+                                <span class="page-link" href="#">{{i}}</span>
+                            </li>
+                        {% endfor %}
+                        <li
+                            class="page-item user-select-none"
+                            data-action="click->live#action"
+                            data-live-action-param="increment"
+                            role="button"
+                        >
+                            <span class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                {% if pending %}
+                    You have no pending orders.
+                {% else %}
+                    You have no completed orders.
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,177 @@
+<turbo-stream action="update" target="food-menu-modal-body">
+    <template>
+        <div
+            class="container"
+            {{
+                stimulus_controller(
+                    'food-select-extras',
+                    {
+                        'id': dish.id,
+                        'price': dish.price,
+                        'groups': groups | map(g => [g.id, g.name, g.extras | length]),
+                        'sizes': sizes,
+                    }
+                )
+            }}
+        >
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white text-center">
+                    <h2 class="h5 mb-0">{{ dish.name }}</h2>
+                </div>
+            </div>
+
+            {# Available Sizes #}
+            {% if sizes | length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="h5 mb-0">Choose size</h2>
+                    </div>
+                    <div class="card-body">
+                        {% for size, price in sizes %}
+                            <div class="form-check form-check-inline">
+                                <input
+                                    class="form-check-input"
+                                    type="radio" name="sizes"
+                                    id="dish-size-{{ size }}"
+                                    value="{{ size }}"
+                                    {{
+                                        stimulus_action(
+                                            'food-select-extras',
+                                            'selectSize',
+                                            'change',
+                                            {
+                                                'size': size,
+                                                'price': price,
+                                            }
+                                        )
+                                    }}
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="size{{ size }}"
+                                >{{ size }} (+ {{ price | format_currency('USD', {decimal_always_shown:true}, 'en') }})</label>
+                            </div>
+                        {% endfor %}
+                        <div class="alert alert-danger d-none" role="alert" id="select-dish-size-error">
+                            Please select a size.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Groups with single selectable extras (max. 4) #}
+            {% for group in groups %}
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="h5 mb-0">{{ group.name }}</h2>
+                    </div>
+                    <div class="card-body">
+                        {% for extra in group.extras %}
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="{{ group.name }}"
+                                    id="group-{{group.id}}-extra-{{extra.id}}"
+                                    value="{{extra.id}}"
+                                    {{
+                                        stimulus_action(
+                                            'food-select-extras',
+                                            'addExtra',
+                                            'change',
+                                            {
+                                                'type': 2,
+                                                'group': group.id,
+                                                'groupName': group.name,
+                                                'extra': extra.id,
+                                                'extraName': extra.name,
+                                                'price': extra.price,
+                                                'dish': dish.id,
+                                            }
+                                        )
+                                    }}
+                                    required
+                                />
+                                <label
+                                    class="form-check-label"
+                                    for="group-{{group.id}}-extra-{{extra.id}}"
+                                >{{ extra.name }} (+ {{ extra.price | format_currency('USD', {decimal_always_shown:true}, 'en') }})</label>
+                            </div>
+                        {% endfor %}
+                        <div class="alert alert-danger d-none" role="alert" id="select-grouped-extra-error-{{ group.id }}">
+                            Please choose from one extra.
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+            {# Multi-Extras (Checkboxes) #}
+            {% if extras | length > 0 %}
+                <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="h5 mb-0">Extras</h2>
+                    </div>
+                    <div class="card-body">
+                        {% set index = 0 %}
+                        {% for extra in extras %}
+                            {% if extra.selectType == 1 %}
+                                {% if index % 3 == 0 %}
+                                <div class="row">
+                                {% endif %}
+                                    <div class="col-6 col-md-4">
+                                        <div class="form-check">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="extras[]"
+                                                id="extra-{{extra.id}}"
+                                                value="{{extra.id}}"
+                                                {{
+                                                    stimulus_action(
+                                                        'food-select-extras',
+                                                        'addExtra',
+                                                        'change',
+                                                        {
+                                                            'type': 1,
+                                                            'group': 0,
+                                                            'groupName': '',
+                                                            'extra': extra.id,
+                                                            'extraName': extra.name,
+                                                            'price': extra.price,
+                                                            'dish': dish.id,
+                                                        }
+                                                    )
+                                                }}
+                                            />
+                                            <label
+                                                class="form-check-label"
+                                                for="{{extra.id}}"
+                                            >{{extra.name}} (+ {{ extra.price | format_currency('USD', {decimal_always_shown:true}, 'en') }})</label>
+                                        </div>
+                                    </div>
+                                {% if index % 3 == 2 %}
+                                </div>
+                                {% elseif loop.last %}
+                                </div>
+                                {% endif %}
+                                {% set index = index + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Dish total price #}
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h5 mb-0">
+                        Total:
+                        <span {{ stimulus_target('food-select-extras', 'dishTotal') }}>
+                            {{ dish.price | format_currency('USD', {decimal_always_shown:true}, 'en')}}
+                        </span>
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </template>
+</turbo-stream>

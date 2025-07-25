@@ -1,0 +1,112 @@
+<turbo-stream action="update" method="morph" target="restaurants">
+    <template>
+        {% if cuisines and maxRating and zip and zip > 0 %}
+            <div
+                id="restaurants-main-container"
+                {{
+                    stimulus_controller('restaurant-filter', { 'zip': zip }) |
+                    stimulus_target('restaurant-filter', 'restaurantsMainContainer')
+                }}
+                class="row"
+            >
+                <div id="restaurants-filter-bar" class="mt-3" {{ stimulus_target('restaurant-filter', 'restaurantFilterBar') }}>
+                    <button
+                        class="btn btn-primary"
+                        id="show-restaurants-filter-btn"
+                        {{
+                            stimulus_action('restaurant-filter', 'showFilter') |
+                            stimulus_target('restaurant-filter', 'showFilterBtn')
+                        }}
+                    >Show filter</button>
+                    <button
+                        class="btn btn-primary d-none"
+                        id="hide-restaurants-filter-btn"
+                        {{
+                            stimulus_action('restaurant-filter', 'hideFilter') |
+                            stimulus_target('restaurant-filter', 'hideFilterBtn')
+                        }}
+                    >Hide filter</button>
+                    <div
+                        id="restaurant-filter-container"
+                        class="d-none"
+                        {{ stimulus_target('restaurant-filter', 'restaurantFilter') }}
+                    >
+                        <h4>Filter</h4>
+                        <HR style="width: 80%;" />
+                        <div id="restaurants-filter-cuisine">
+                            <h5>Select cuisine:</h5>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-secondary btn-sm dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    id="restaurants-cuisine-button"
+                                    {{ stimulus_target('restaurant-filter', 'button') }}
+                                >
+                                    Cuisine
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for cuisine in cuisines %}
+                                        <li>
+                                            <span
+                                                class="dropdown-item cursor-pointer"
+                                                {{
+                                                    stimulus_action(
+                                                        'restaurant-filter',
+                                                        'selectCuisine',
+                                                        'click',
+                                                        {'cuisine': cuisine, 'elementId': loop.index0}
+                                                    ) |
+                                                    stimulus_target('restaurant-filter', 'cuisines')
+                                                }}
+                                            >{{cuisine}}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="restaurants-filter-rating">
+                            <h5>Minimum rating:</h5>
+                            {% set maxRating = maxRating * 2 %}
+                            {% for i in 1..maxRating %}
+                                <div>
+                                    {% set stars = (i / 2) %}
+                                    <label for="rating-{{i}}" class="visually-hidden">{{stars}} stars</label>
+                                    <input
+                                        type="radio"
+                                        value="{{stars}}"
+                                        name="rating"
+                                        id="rating-{{i}}"
+                                        {{
+                                            stimulus_action(
+                                                'restaurant-filter',
+                                                'selectRating',
+                                                'click',
+                                                {'rating': stars, 'elementId': loop.index0}
+                                            )
+                                            |
+                                            stimulus_target('restaurant-filter', 'ratings')
+                                        }}
+                                    />
+                                    {% set current = (i / 2)|round(0, 'floor') %}
+                                    {% if current > 0 %}
+                                        {% for j in 1..current %}
+                                            <i class="bi bi-star-fill" style="color: gold;"></i>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if i % 2 == 1 %}
+                                        <i class="bi bi-star-half" style="color: gold;"></i>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div id="restaurants-list" {{ stimulus_target('restaurant-filter', 'restaurantsList') }} class="mt-3"></div>
+            </div>
+        {% else %}
+
+        {% endif %}
+    </template>
+</turbo-stream>

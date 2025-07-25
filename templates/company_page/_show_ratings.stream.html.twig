@@ -1,0 +1,15 @@
+<turbo-stream action="update" target="food-menu-modal-body">
+    <template>
+        {% if status is defined and status == 200 and company is defined %}
+            {{ component('ShowRatings', { company: company }) }}
+        {% elseif status is defined and message is defined and message != '' %}
+            <div class="alert alert-danger" role="alert">
+                Error {{ status }}: {{ message }}
+            </div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                An unknown error occured.
+            </div>
+        {% endif %}
+    </template>
+</turbo-stream>

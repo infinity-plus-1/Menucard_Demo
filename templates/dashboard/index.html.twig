@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+
+{% if is_granted('ROLE_USER') %}
+    <div
+        data-controller="dashboard"
+        {{ stimulus_target('dashboard', 'dashboard') }}
+    >
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+                    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                        <span class="fs-5 d-none d-sm-inline">Dashboard</span>
+                        <ul class="nav nav-pills flex-column mb-0 align-items-center align-items-sm-start" id="menu">
+                            <li class="nav-item">
+                                <a href="{{ path('home') }}" class="nav-link align-middle px-0">
+                                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('dashboard') }}" class="nav-link px-0 align-middle">
+                                    <i class="fs-4 bi bi-menu-app"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
+                            </li>
+                            <li>
+                                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
+                                    <i class="fs-4 bi bi-truck"></i> <span class="ms-1 d-none d-sm-inline">Orders</span></a>
+                                <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
+                                    <li class="ms-2 w-100">
+                                        <a
+                                            href="{{ path('order_list', {pending: 'pending'}) }}"
+                                            class="nav-link px-0"
+                                        >
+                                            <span>Pending</span>
+                                        </a>
+                                    </li>
+                                    <li class="ms-2">
+                                        <a
+                                            href="{{ path('order_list', {pending: 'done'}) }}"
+                                            class="nav-link px-0"
+                                        >
+                                            <span>Done</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% if is_granted('ROLE_COMPANY') %}
+                                <li>
+                                    <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                        <i class="fs-4 bi bi-fork-knife"></i> <span class="ms-1 d-none d-sm-inline">Products</span> </a>
+                                        <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
+                                        <li class="ms-2 w-100">
+                                            <a href="{{ path('create_product') }}" data-turbo-frame="dashboard_window" class="nav-link px-0">
+                                                <span>Create</span>
+                                            </a>
+                                        </li>
+                                        <li class="ms-2">
+                                            <a href="{{ path('list_dishes') }}" class="nav-link px-0"> <span>View</span></a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#submenu4" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                        <i class="fs-4 bi bi-buildings"></i> <span class="ms-1 d-none d-sm-inline">Company</span> </a>
+                                        <ul class="collapse nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
+                                        <li class="ms-2 w-100">
+                                            <a href="{{ path('company') }}" data-turbo-frame="dashboard_window" class="nav-link px-0">
+                                                <span>Edit company</span>
+                                            </a>
+                                        </li>
+                                        <li class="ms-2">
+                                            <a href="{{ path(name = 'company_page', parameters = {id: company_id }) }}" class="nav-link px-0">
+                                                <span>View company page</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <hr>
+                        <div class="dropdown pb-4">
+                            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                                {#<img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">#}
+                                <span
+                                    class="rounded-circle"
+                                    style="padding: 5px; background-color: {{ random(['blue', 'blueviolet', 'brown', 'coral', 'crimson']) }};"
+                                >
+                                    {{ user.forename | slice(0,1) | upper}} {{ user.surname | slice(0,1) | upper}}
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                                <li><a class="dropdown-item" href="{{ path('edit_user') }}">Edit profile</a></li>
+                                <li><a class="dropdown-item" href="{{ path('update_password') }}">Change password</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <button
+                                        class="dropdown-item"
+                                        {{
+                                            stimulus_controller('logout') |
+                                            stimulus_action('logout', 'logout')
+                                        }}
+                                    >
+                                        Sign out
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col py-3">
+                    <turbo-frame id="dashboard_window"></turbo-frame>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="container position-absolute top-50 start-50 translate-middle">
+        <div class="alert alert-danger" role="alert">
+            You are not eligible to view this page.
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
