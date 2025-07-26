@@ -24,7 +24,7 @@ deploy:
     # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
-        composer install --no-dev --optimize-autoloader &&
+        COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader &&
         php bin/console cache:clear --env=prod &&
         php bin/console cache:warmup --env=prod &&
         chown -R www-data:www-data var &&
