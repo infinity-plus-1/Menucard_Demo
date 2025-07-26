@@ -5,13 +5,12 @@ deploy:
     - main
   before_script:
     # Update the system and install symfony dependencies
-    - apt-get update && apt-get install -y \
-        bash \
-        git \
-        openssh-client \
-        unzip \
-        curl \
-        rsync
+    - apt-get update && apt-get install -y bash
+    - apt-get install -y git
+    - apt-get install -y openssh-client
+    - apt-get install -y unzip
+    - apt-get install -y curl
+    - apt-get install -y rsync
     # Install composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     # SSH-Key preparation
