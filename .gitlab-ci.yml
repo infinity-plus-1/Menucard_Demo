@@ -25,6 +25,7 @@ deploy:
     ssh $DEPLOY_USER@$DEPLOY_HOST "cat > $DEPLOY_PATH/.env" <<EOF
 $SYMFONY_ENV_FILE
 EOF
+    - cat $DEPLOY_PATH/.env
     # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
