@@ -21,7 +21,7 @@ deploy:
   script:
     # Transfer all files via rsync (without dirs like vendor...)
     - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
-    # Run SSH commands: composer install, clear/warmup and permissions
+    # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
         composer install --no-dev --optimize-autoloader &&
