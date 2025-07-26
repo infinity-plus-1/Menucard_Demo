@@ -22,7 +22,9 @@ deploy:
     # Transfer all files via rsync (without dirs like vendor...)
     - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     - |
-      ssh $DEPLOY_USER@$DEPLOY_HOST 'echo "$SYMFONY_ENV_FILE" > $DEPLOY_PATH/.env'
+    ssh $DEPLOY_USER@$DEPLOY_HOST "cat > $DEPLOY_PATH/.env" <<EOF
+$SYMFONY_ENV_FILE
+EOF
     # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
