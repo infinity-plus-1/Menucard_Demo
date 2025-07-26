@@ -1,0 +1,38 @@
+deploy:
+  stage: deploy
+  image: php:latest
+  only:
+    - main
+  before_script:
+    # Update the system and install symfony dependencies
+    - apt-get update && apt-get install -y \
+        bash \
+        git \
+        openssh-client \
+        unzip \
+        curl \
+        php-mbstring \
+        php-intl \
+        php-mysql \
+        rsync
+    # Install composer
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    # SSH-Key preparation
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_DEPLOY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+  script:
+    # Transfer all files via rsync (without dirs like vendor...)
+    - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    # Run SSH commands: composer install, clear/warmup and permissions
+    - ssh $DEPLOY_USER@$DEPLOY_HOST "
+        cd $DEPLOY_PATH &&
+        composer install --no-dev --optimize-autoloader &&
+        php bin/console cache:clear --env=prod &&
+        php bin/console cache:warmup --env=prod &&
+        chown -R www-data:www-data var &&
+        chmod -R 755 var"
+  environment:
+    name: production
+    url: http://$DEPLOY_HOST/
