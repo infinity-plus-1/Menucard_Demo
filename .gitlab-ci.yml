@@ -1,6 +1,6 @@
 deploy:
   stage: deploy
-  image: php:latest
+  image: php:8.2
   only:
     - main
   before_script:
@@ -11,9 +11,6 @@ deploy:
         openssh-client \
         unzip \
         curl \
-        php-mbstring \
-        php-intl \
-        php-mysql \
         rsync
     # Install composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
