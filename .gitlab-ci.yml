@@ -1,20 +1,16 @@
 deploy:
   stage: deploy
-  image: php:latest
+  image: php:8.2
   only:
     - main
   before_script:
     # Update the system and install symfony dependencies
-    - apt-get update && apt-get install -y \
-        bash \
-        git \
-        openssh-client \
-        unzip \
-        curl \
-        php-mbstring \
-        php-intl \
-        php-mysql \
-        rsync
+    - apt-get update && apt-get install -y bash
+    - apt-get install -y git
+    - apt-get install -y openssh-client
+    - apt-get install -y unzip
+    - apt-get install -y curl
+    - apt-get install -y rsync
     # Install composer
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     # SSH-Key preparation
@@ -24,11 +20,13 @@ deploy:
     - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
   script:
     # Transfer all files via rsync (without dirs like vendor...)
-    - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
-    # Run SSH commands: composer install, clear/warmup and permissions
+    - echo "$SYMFONY_ENV_FILE" > .env
+    - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" --include=".env" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
-        composer install --no-dev --optimize-autoloader &&
+        COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader &&
+        php bin/console asset-map:compile &&
         php bin/console cache:clear --env=prod &&
         php bin/console cache:warmup --env=prod &&
         chown -R www-data:www-data var &&
