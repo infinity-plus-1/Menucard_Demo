@@ -21,7 +21,7 @@ deploy:
   script:
     # Transfer all files via rsync (without dirs like vendor...)
     - echo "$SYMFONY_ENV_FILE" > .env
-    - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="node_modules" --include=".env" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+    - rsync -avz --delete --exclude=".git*" --exclude="vendor" --exclude="public/uploads" --exclude="node_modules" --include=".env" ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
     # Run SSH commands, composer installs, clear/warmup and permissions
     - ssh $DEPLOY_USER@$DEPLOY_HOST "
         cd $DEPLOY_PATH &&
