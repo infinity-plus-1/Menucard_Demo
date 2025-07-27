@@ -256,9 +256,13 @@ body {
     font-size: calc(1rem + 1vw);
   }
 
+  .dish-card-body li {
+    list-style-position: inside;
+  }
+
   .dish-price {
     color: grey;
-    font-size: 22px;
+    font-size: 1.4rem;
     height: 35px;
   }
 
