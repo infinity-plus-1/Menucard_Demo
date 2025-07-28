@@ -133,4 +133,9 @@ class HomeController extends AbstractController
             
         ]);
     }
+
+    #[Route('/impressum', name: 'impressum')]
+    public function impressum(): Response {
+        return $this->render('home/impressum.html.twig', []);
+    }
 }

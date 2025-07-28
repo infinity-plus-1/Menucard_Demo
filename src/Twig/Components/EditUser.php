@@ -31,7 +31,7 @@ final class EditUser extends AbstractController
     public ?EditUserDto $user = NULL;
 
     #[LiveProp(writable:true)]
-    public ?string $oldPassword = NULL;
+    public ?string $currentPassword = NULL;
 
     #[LiveProp]
     public ?string $message = NULL;
@@ -46,7 +46,7 @@ final class EditUser extends AbstractController
     {
         $this->user = $this->user ?? new EditUserDto();
         $form = $this->createForm(UserFormType::class, $this->user);
-        $form->get('oldPassword')->setData($this->oldPassword);
+        $form->get('currentPassword')->setData($this->currentPassword);
         $this->message = '';
         $this->status = 200;
         return $form;
@@ -59,7 +59,7 @@ final class EditUser extends AbstractController
         $this->message = '';
         $this->status = 200;
         $form = $this->getForm();
-        $oldPassword = $this->formValues['oldPassword'] ?? '';
+        $currentPassword = $this->formValues['currentPassword'] ?? '';
         $form->submit($this->formValues);
         $formErrors = $form->getErrors(true);
 
@@ -73,7 +73,7 @@ final class EditUser extends AbstractController
 
         $this->resetForm();
 
-        $this->formValues['oldPassword'] = $oldPassword;
+        $this->formValues['currentPassword'] = $currentPassword;
 
         try {
             $this->submitForm();
@@ -96,7 +96,7 @@ final class EditUser extends AbstractController
             return;
         }
 
-        if (!$uphi->isPasswordValid($user, $oldPassword)) {
+        if (!$uphi->isPasswordValid($user, $currentPassword)) {
             $this->message = 'The current password you have entered is invalid.';
             $this->status = 400;
             return;

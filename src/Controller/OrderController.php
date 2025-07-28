@@ -332,6 +332,7 @@ class OrderController extends AbstractController
             $ttl = $this->_client->ttl($uuid);
         } else {
             $this->_client->del($uuid);
+            $logger->error('Could not validate data for finalizing.', $data);
         }
 
         return $this->render('order/index.html.twig', [
@@ -364,27 +365,33 @@ class OrderController extends AbstractController
         $data = $this->_validateAndProcessData($order, $em, $logger);
 
         if(!isset($data['status'])) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse($data['message'] ?? 'An unknown error occured, please try again.', 500);
         }
 
         if ($data['status'] !== 200) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse($data['message'] ?? 'An unknown error occured, please try again.', $data['status']);
         }
 
         if (!isset($data['dishes'])) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse('An unknown error occured, please try again.', 500);
         }
 
         if (!isset($data['company'])) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse('No valid restaurant is assigned to the order.', 404);
         }
 
         if (!isset($data['address'])) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse('No valid address is assigned to the order.', 404);
         }
 
         $company = $data['company'];
         if (!Utility::isValidCompany($company)) {
+            $logger->error('Could not validate data for confirming.', $data);
             return new JsonResponse('An unknown error occured, please try again.', 500);
         }
 

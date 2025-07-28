@@ -23,6 +23,7 @@ export default class extends Controller {
                     const frame = $('turbo-frame#navbar_dropdown');
                     if (frame && frame.length > 0) {
                         frame.get(0).reload();
+                        window.location.href = window.location.href;
                     }
                 }
                 resolve('login_success');

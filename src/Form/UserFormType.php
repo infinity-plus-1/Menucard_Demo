@@ -142,13 +142,13 @@ class UserFormType extends AbstractType
                     ]
                 ]
             )
-            ->add('oldPassword', PasswordType::class, [
-                'label' => 'Enter your old password to submit changes*:',
+            ->add('currentPassword', PasswordType::class, [
+                'label' => 'Enter your current password to submit changes*:',
                 'mapped' => false,
                 'required' => true,
                 'always_empty' => false,
                 'attr' => [
-                    'placeholder' => 'Old password'
+                    'placeholder' => 'current password'
                 ],
                 'constraints' => [
                     new UserPassword([
