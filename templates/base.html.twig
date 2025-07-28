@@ -49,12 +49,12 @@
             <div class="loaderSpinner"></div>
         </div>
         {% block body %}{% endblock %}
+        <footer>
+            <div class="alert alert-info mt-3 text-center">
+                <p>This website is for learning and demo purposes.</p>
+                <p>Any foreign content belong to it's owners</p>
+                <p><a href="{{ path('impressum') }}">Impressum</a>
+            </div>
+        </footer>
     </body>
-    <footer>
-        <div class="alert alert-info mt-3 text-center">
-            <p>This website is for learning and demo purposes.</p>
-            <p>Any foreign content belong to it's owners</p>
-            <p><a href="{{ path('impressum') }}">Impressum</a>
-        </div>
-    </footer>
 </html>
